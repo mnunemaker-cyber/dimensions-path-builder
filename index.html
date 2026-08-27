@@ -1,0 +1,3232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dimensions Learning Path</title>
+<style>
+/* DESIGN SYSTEM — Dimensions dark navy with brand accents */
+.dpb-root {
+  --dpb-ink: #f4f5fb;
+  --dpb-ink-mid: #b4b6cf;
+  --dpb-ink-dim: #7a7da0;
+  --dpb-ink-faint: #3d3870;
+  --dpb-ground: #2a245c;
+  --dpb-ground-deep: #1c1843;
+  --dpb-ground-elev: #34306b;
+  --dpb-ground-surface: rgba(52,48,107,0.5);
+  --dpb-brand: #40bbed;
+  --dpb-brand-cool: #304e9d;
+  --dpb-brand-warm: #ea3d9c;
+  --dpb-brand-green: #a2c617;
+  --dpb-brand-orange: #f18900;
+  --dpb-brand-yellow: #ffcc00;
+  --dpb-seg-academic: #40bbed;
+  --dpb-seg-industry: #f18900;
+  --dpb-seg-nonprofit: #ea3d9c;
+  --dpb-seg-publisher: #a2c617;
+  --dpb-lvl-novice: #a2c617;
+  --dpb-lvl-beginner: #40bbed;
+  --dpb-lvl-intermediate: #f18900;
+  --dpb-lvl-expert: #ea3d9c;
+  --dpb-grid-line: rgba(64,187,237,0.05);
+}
+
+body { margin: 0; background: #2a245c; min-height: 100vh; }
+.dpb-root, .dpb-root * {
+  box-sizing: border-box !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.dpb-root {
+  background: var(--dpb-ground) !important;
+  color: var(--dpb-ink) !important;
+  min-height: 100vh !important;
+  position: relative !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  line-height: 1.5 !important;
+}
+
+/* Drifting hex field — fixed so it stays in viewport during scroll */
+.dpb-hex-field { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.dpb-dhex { position: absolute; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); will-change: transform; }
+.dpb-dhex.dpb-is-outline { background: transparent; }
+.dpb-dhex.dpb-is-outline::before { content:''; position:absolute; inset:0; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: rgba(64,187,237,0.28); }
+.dpb-dhex.dpb-is-outline::after { content:''; position:absolute; inset:1.5px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: var(--dpb-ground); }
+.dpb-dhex-1 { top: 8%; left: 6%; width: 320px; height: 320px; background: var(--dpb-brand-cool); opacity: 0.18; animation: dpb-drift-a 64s ease-in-out infinite alternate; }
+.dpb-dhex-2 { top: 12%; right: -40px; width: 240px; height: 240px; animation: dpb-drift-b 78s ease-in-out infinite alternate; }
+.dpb-dhex-3 { bottom: 8%; left: -50px; width: 280px; height: 280px; background: var(--dpb-brand); opacity: 0.10; animation: dpb-drift-c 56s ease-in-out infinite alternate; }
+.dpb-dhex-4 { bottom: 14%; right: 8%; width: 200px; height: 200px; background: var(--dpb-brand-warm); opacity: 0.09; animation: dpb-drift-d 70s ease-in-out infinite alternate; }
+.dpb-dhex-5 { top: 50%; left: 25%; width: 140px; height: 140px; background: var(--dpb-brand-green); opacity: 0.08; animation: dpb-drift-e 88s ease-in-out infinite alternate; }
+.dpb-dhex-6 { top: 35%; right: 22%; width: 110px; height: 110px; animation: dpb-drift-f 52s ease-in-out infinite alternate; }
+@keyframes dpb-drift-a { from { transform: translate(0,0) rotate(0); } to { transform: translate(30px,-20px) rotate(6deg); } }
+@keyframes dpb-drift-b { from { transform: translate(0,0) rotate(0); } to { transform: translate(-26px,28px) rotate(-5deg); } }
+@keyframes dpb-drift-c { from { transform: translate(0,0) rotate(0); } to { transform: translate(22px,-16px) rotate(4deg); } }
+@keyframes dpb-drift-d { from { transform: translate(0,0) rotate(0); } to { transform: translate(-18px,-22px) rotate(-3deg); } }
+@keyframes dpb-drift-e { from { transform: translate(0,0) rotate(0); } to { transform: translate(28px,18px) rotate(8deg); } }
+@keyframes dpb-drift-f { from { transform: translate(0,0) rotate(0); } to { transform: translate(-22px,26px) rotate(-6deg); } }
+
+.dpb-grid { position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: linear-gradient(to right, var(--dpb-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--dpb-grid-line) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.dpb-vignette { position: fixed; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse 55% 65% at center, transparent 0%, transparent 35%, var(--dpb-ground-deep) 100%), radial-gradient(ellipse at top, rgba(64,187,237,0.04), transparent 50%);
+}
+
+/* Top chrome */
+.dpb-chrome-top { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 22px 40px; background: linear-gradient(to bottom, rgba(42,36,92,0.92) 0%, rgba(42,36,92,0.7) 70%, transparent 100%); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.dpb-brand-mark { display: flex; align-items: center; gap: 10px; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.18em; color: var(--dpb-ink-mid) !important; font-weight: 500 !important; }
+.dpb-brand-mark .dpb-brand-dot { width: 6px; height: 6px; background: var(--dpb-brand); border-radius: 50%; box-shadow: 0 0 12px rgba(64,187,237,0.6); }
+.dpb-brand-mark strong { color: var(--dpb-ink) !important; font-weight: 600 !important; }
+.dpb-progress-hex { display: flex; gap: 6px; align-items: center; }
+.dpb-phex { width: 18px; height: 20px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: var(--dpb-ink-faint); transition: background 0.6s cubic-bezier(0.22,1,0.36,1); }
+.dpb-phex.dpb-is-active { background: var(--dpb-brand); box-shadow: 0 0 16px rgba(64,187,237,0.5); }
+.dpb-phex.dpb-is-done { background: var(--dpb-brand-cool); }
+.dpb-step-indicator { font-size: 11px !important; color: var(--dpb-ink-mid) !important; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500 !important; font-variant-numeric: tabular-nums; }
+.dpb-step-indicator strong { color: var(--dpb-ink) !important; font-weight: 600 !important; }
+
+/* Stage */
+.dpb-stage { position: relative; z-index: 10; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 100px 32px 60px; }
+.dpb-content { max-width: 880px; width: 100%; text-align: center; position: relative; }
+.dpb-content.dpb-content-wide { max-width: 1040px; }
+
+.dpb-eyebrow { font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.22em; color: var(--dpb-brand) !important; margin-bottom: 20px !important; font-weight: 500 !important; animation: dpb-fadeIn 0.7s ease-out; }
+.dpb-greeting { font-size: 38px !important; font-weight: 300 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; color: var(--dpb-ink) !important; margin-bottom: 14px !important; animation: dpb-fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+.dpb-greeting .dpb-name { color: var(--dpb-brand) !important; font-weight: 500 !important; display: inline-block; position: relative; transition: opacity 0.32s cubic-bezier(0.22,1,0.36,1); }
+.dpb-greeting .dpb-name.dpb-is-fading { opacity: 0; }
+.dpb-greeting .dpb-name.dpb-is-active::after { content: ''; display: inline-block; width: 2px; height: 0.85em; background: var(--dpb-brand); margin-left: 2px; vertical-align: -0.05em; animation: dpb-caret 1.4s ease-in-out infinite; }
+@keyframes dpb-caret { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+.dpb-sub { font-size: 14px !important; color: var(--dpb-ink-mid) !important; letter-spacing: 0.01em; margin: 0 auto 36px !important; font-weight: 400 !important; max-width: 520px !important; line-height: 1.55 !important; animation: dpb-fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
+
+/* Input field */
+.dpb-input-wrap { max-width: 420px; margin: 0 auto; text-align: left; animation: dpb-fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.55s both; }
+.dpb-input-label { font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.18em; color: var(--dpb-ink-mid) !important; margin-bottom: 14px !important; display: block; font-weight: 500 !important; }
+.dpb-input-field-wrap { position: relative; }
+.dpb-text-input { width: 100% !important; background: transparent !important; border: none !important; border-bottom: 1px solid var(--dpb-ink-faint) !important; padding: 14px 0 !important; font-size: 22px !important; color: var(--dpb-ink) !important; font-weight: 400 !important; outline: none !important; letter-spacing: -0.01em; transition: border-color 0.3s; }
+.dpb-text-input::placeholder { color: var(--dpb-ink-dim); }
+.dpb-input-underline { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--dpb-brand); transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 0 8px rgba(64,187,237,0.4); }
+.dpb-text-input:focus ~ .dpb-input-underline { transform: scaleX(1); }
+
+/* Textarea */
+.dpb-textarea-wrap { position: relative; margin: 0 auto; max-width: 720px; animation: dpb-fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.55s both; }
+.dpb-textarea { width: 100% !important; background: var(--dpb-ground-surface) !important; border: 1px solid var(--dpb-ink-faint) !important; border-radius: 8px !important; padding: 16px 20px !important; font-size: 15px !important; color: var(--dpb-ink) !important; font-weight: 400 !important; min-height: 90px !important; outline: none !important; resize: vertical; line-height: 1.55; transition: border-color 0.3s, box-shadow 0.3s; }
+.dpb-textarea::placeholder { color: var(--dpb-ink-dim); font-style: italic; }
+.dpb-textarea:focus { border-color: var(--dpb-brand) !important; box-shadow: 0 0 0 3px rgba(64,187,237,0.15) !important; }
+.dpb-textarea-count { position: absolute; bottom: 12px; right: 16px; font-size: 10px; color: var(--dpb-ink-dim); letter-spacing: 0.1em; text-transform: uppercase; pointer-events: none; }
+
+.dpb-divider { display: flex; align-items: center; gap: 14px; margin: 20px auto 14px; max-width: 640px; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dpb-ink-mid) !important; font-weight: 500 !important; }
+.dpb-divider::before, .dpb-divider::after { content: ''; flex: 1; height: 1px; background: var(--dpb-ink-faint); }
+
+/* Tile grid */
+.dpb-tile-grid { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; max-width: 880px !important; margin: 0 auto !important; text-align: left !important; }
+@media (max-width: 560px) { .dpb-tile-grid { grid-template-columns: 1fr !important; } }
+.dpb-tile { background: var(--dpb-ground-surface) !important; border: 1px solid var(--dpb-ink-faint) !important; border-radius: 8px !important; padding: 18px 22px !important; cursor: pointer; display: flex !important; gap: 16px !important; align-items: flex-start !important; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background 0.2s; text-align: left !important; width: 100%; color: var(--dpb-ink) !important; }
+.dpb-tile:hover { transform: translateY(-2px); border-color: rgba(64,187,237,0.4) !important; }
+.dpb-tile.dpb-is-selected { border-color: var(--dpb-brand) !important; box-shadow: 0 0 0 1px var(--dpb-brand), 0 0 24px rgba(64,187,237,0.2) !important; background: rgba(64,187,237,0.08) !important; }
+.dpb-tile-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 18px !important; background: rgba(64,187,237,0.12); color: var(--dpb-brand); }
+.dpb-tile-body { flex: 1; min-width: 0; }
+.dpb-tile-title { font-size: 15px !important; color: var(--dpb-ink) !important; margin-bottom: 4px; font-weight: 500 !important; }
+.dpb-tile-desc { font-size: 12.5px !important; color: var(--dpb-ink-mid) !important; line-height: 1.5 !important; }
+
+.dpb-tile[data-seg="Academic"] .dpb-tile-icon  { background: rgba(64,187,237,0.15); color: var(--dpb-seg-academic); }
+.dpb-tile[data-seg="Industry"] .dpb-tile-icon  { background: rgba(241,137,0,0.15);  color: var(--dpb-seg-industry); }
+.dpb-tile[data-seg="Nonprofit"] .dpb-tile-icon { background: rgba(234,61,156,0.15); color: var(--dpb-seg-nonprofit); }
+.dpb-tile[data-seg="Publisher"] .dpb-tile-icon { background: rgba(162,198,23,0.15); color: var(--dpb-seg-publisher); }
+.dpb-tile[data-seg="Other"]    .dpb-tile-icon { background: rgba(180,182,207,0.12); color: var(--dpb-ink-mid); }
+.dpb-tile[data-seg="Other"] { border-style: dashed !important; grid-column: 1 / -1; align-items: center !important; padding: 14px 22px !important; }
+.dpb-tile[data-seg="Other"] .dpb-tile-icon { width: 32px; height: 32px; font-size: 16px !important; }
+.dpb-tile[data-seg="Other"] .dpb-tile-title { font-size: 13.5px !important; color: var(--dpb-ink-mid) !important; margin-bottom: 0; }
+
+.dpb-tile.dpb-is-selected[data-seg="Academic"]  { background: rgba(64,187,237,0.12) !important; border-color: var(--dpb-seg-academic) !important; box-shadow: 0 0 24px rgba(64,187,237,0.2) !important; }
+.dpb-tile.dpb-is-selected[data-seg="Industry"]  { background: rgba(241,137,0,0.10) !important;  border-color: var(--dpb-seg-industry) !important;  box-shadow: 0 0 24px rgba(241,137,0,0.2) !important; }
+.dpb-tile.dpb-is-selected[data-seg="Nonprofit"] { background: rgba(234,61,156,0.10) !important; border-color: var(--dpb-seg-nonprofit) !important; box-shadow: 0 0 24px rgba(234,61,156,0.2) !important; }
+.dpb-tile.dpb-is-selected[data-seg="Publisher"] { background: rgba(162,198,23,0.10) !important; border-color: var(--dpb-seg-publisher) !important; box-shadow: 0 0 24px rgba(162,198,23,0.2) !important; }
+
+/* Prompt chips */
+.dpb-prompt-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; max-width: 920px !important; margin: 0 auto !important; }
+@media (max-width: 880px) { .dpb-prompt-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+@media (max-width: 560px) { .dpb-prompt-grid { grid-template-columns: 1fr !important; } }
+.dpb-prompt-chip { background: var(--dpb-ground-surface) !important; border: 1px solid var(--dpb-ink-faint) !important; border-radius: 8px !important; padding: 12px 14px !important; cursor: pointer; display: flex !important; gap: 10px !important; align-items: flex-start !important; transition: transform 0.2s, border-color 0.2s, background 0.2s; text-align: left !important; color: var(--dpb-ink) !important; width: 100%; }
+.dpb-prompt-chip:hover { transform: translateY(-2px); border-color: rgba(64,187,237,0.4) !important; }
+.dpb-prompt-chip.dpb-is-selected { border-color: var(--dpb-brand) !important; background: rgba(64,187,237,0.10) !important; box-shadow: 0 0 0 1px var(--dpb-brand); }
+.dpb-prompt-icon { width: 30px; height: 30px; flex-shrink: 0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 15px !important; background: rgba(64,187,237,0.12); color: var(--dpb-brand); }
+.dpb-prompt-title { font-size: 13.5px !important; color: var(--dpb-ink) !important; margin-bottom: 3px; font-weight: 500 !important; }
+.dpb-prompt-desc { font-size: 12px !important; color: var(--dpb-ink-mid) !important; line-height: 1.45 !important; }
+.dpb-prompt-chip[data-tone="orange"] .dpb-prompt-icon { background: rgba(241,137,0,0.15); color: var(--dpb-brand-orange); }
+.dpb-prompt-chip[data-tone="pink"]   .dpb-prompt-icon { background: rgba(234,61,156,0.15); color: var(--dpb-brand-warm); }
+.dpb-prompt-chip[data-tone="green"]  .dpb-prompt-icon { background: rgba(162,198,23,0.15); color: var(--dpb-brand-green); }
+.dpb-prompt-chip[data-tone="yellow"] .dpb-prompt-icon { background: rgba(255,204,0,0.15);  color: var(--dpb-brand-yellow); }
+.dpb-prompt-chip[data-tone="muted"]  { border-style: dashed !important; }
+.dpb-prompt-chip[data-tone="muted"] .dpb-prompt-icon { background: rgba(180,182,207,0.12); color: var(--dpb-ink-mid); }
+.dpb-prompt-chip[data-tone="muted"] .dpb-prompt-title { color: var(--dpb-ink-mid) !important; }
+
+/* Comfort rows */
+.dpb-comfort-list { display: flex; flex-direction: column; gap: 10px; max-width: 720px; margin: 0 auto; text-align: left; }
+.dpb-comfort-row { background: var(--dpb-ground-surface) !important; border: 1px solid var(--dpb-ink-faint) !important; border-radius: 8px !important; padding: 14px 20px !important; cursor: pointer; display: flex !important; gap: 18px !important; align-items: center !important; transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s; text-align: left !important; width: 100%; color: var(--dpb-ink) !important; }
+.dpb-comfort-row:hover { transform: translateY(-1px); border-color: rgba(64,187,237,0.4) !important; }
+.dpb-comfort-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 17px !important; }
+.dpb-comfort-body { flex: 1; min-width: 0; }
+.dpb-comfort-quote { font-size: 15px !important; color: var(--dpb-ink) !important; margin-bottom: 3px; font-weight: 500 !important; }
+.dpb-comfort-desc { font-size: 12.5px !important; color: var(--dpb-ink-mid) !important; line-height: 1.45 !important; }
+.dpb-level-pip { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.12em; padding: 4px 10px; border-radius: 12px; flex-shrink: 0; border: 1px solid; font-weight: 500 !important; }
+.dpb-comfort-row[data-level="Novice"]       .dpb-comfort-icon { background: rgba(162,198,23,0.15); color: var(--dpb-lvl-novice); }
+.dpb-comfort-row[data-level="Novice"]       .dpb-level-pip    { color: var(--dpb-lvl-novice); border-color: rgba(162,198,23,0.4); background: rgba(162,198,23,0.1); }
+.dpb-comfort-row[data-level="Novice"].dpb-is-selected         { border-color: var(--dpb-lvl-novice) !important; background: rgba(162,198,23,0.08) !important; box-shadow: 0 0 24px rgba(162,198,23,0.15) !important; }
+.dpb-comfort-row[data-level="Beginner"]     .dpb-comfort-icon { background: rgba(64,187,237,0.15); color: var(--dpb-lvl-beginner); }
+.dpb-comfort-row[data-level="Beginner"]     .dpb-level-pip    { color: var(--dpb-lvl-beginner); border-color: rgba(64,187,237,0.4); background: rgba(64,187,237,0.1); }
+.dpb-comfort-row[data-level="Beginner"].dpb-is-selected       { border-color: var(--dpb-lvl-beginner) !important; background: rgba(64,187,237,0.08) !important; box-shadow: 0 0 24px rgba(64,187,237,0.15) !important; }
+.dpb-comfort-row[data-level="Intermediate"] .dpb-comfort-icon { background: rgba(241,137,0,0.15); color: var(--dpb-lvl-intermediate); }
+.dpb-comfort-row[data-level="Intermediate"] .dpb-level-pip    { color: var(--dpb-lvl-intermediate); border-color: rgba(241,137,0,0.4); background: rgba(241,137,0,0.1); }
+.dpb-comfort-row[data-level="Intermediate"].dpb-is-selected   { border-color: var(--dpb-lvl-intermediate) !important; background: rgba(241,137,0,0.08) !important; box-shadow: 0 0 24px rgba(241,137,0,0.15) !important; }
+.dpb-comfort-row[data-level="Expert"]       .dpb-comfort-icon { background: rgba(234,61,156,0.15); color: var(--dpb-lvl-expert); }
+.dpb-comfort-row[data-level="Expert"]       .dpb-level-pip    { color: var(--dpb-lvl-expert); border-color: rgba(234,61,156,0.4); background: rgba(234,61,156,0.1); }
+.dpb-comfort-row[data-level="Expert"].dpb-is-selected         { border-color: var(--dpb-lvl-expert) !important; background: rgba(234,61,156,0.08) !important; box-shadow: 0 0 24px rgba(234,61,156,0.15) !important; }
+
+/* Review */
+.dpb-review-list { display: flex; flex-direction: column; gap: 12px; max-width: 640px; margin: 0 auto; text-align: left; }
+.dpb-review-card { background: var(--dpb-ground-surface); border: 1px solid var(--dpb-ink-faint); border-radius: 8px; padding: 18px 22px; display: flex; gap: 18px; align-items: center; }
+.dpb-review-icon { width: 38px; height: 38px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px !important; }
+.dpb-review-icon[data-tone="orange"] { background: rgba(241,137,0,0.18); color: var(--dpb-brand-orange); }
+.dpb-review-icon[data-tone="pink"]   { background: rgba(234,61,156,0.18); color: var(--dpb-brand-warm); }
+.dpb-review-icon[data-tone="blue"]   { background: rgba(64,187,237,0.18); color: var(--dpb-brand); }
+.dpb-review-icon[data-tone="green"]  { background: rgba(162,198,23,0.18); color: var(--dpb-brand-green); }
+.dpb-review-icon[data-tone="muted"]  { background: rgba(180,182,207,0.15); color: var(--dpb-ink-mid); }
+.dpb-review-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.dpb-review-label { display: block !important; font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dpb-ink-mid) !important; font-weight: 500 !important; }
+.dpb-review-value { display: block !important; font-size: 15px !important; color: var(--dpb-ink) !important; line-height: 1.5 !important; }
+.dpb-review-value-quiet { color: var(--dpb-ink-mid) !important; font-size: 13px !important; }
+
+/* Synopsis card */
+.dpb-synopsis-card { background: rgba(64,187,237,0.06); border: 1px solid rgba(64,187,237,0.3); border-radius: 10px; padding: 24px 28px; display: flex; gap: 20px; align-items: flex-start; }
+.dpb-synopsis-icon { width: 38px; height: 38px; border-radius: 6px; background: rgba(64,187,237,0.2); color: var(--dpb-brand) !important; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px !important; margin-top: 2px; }
+.dpb-synopsis-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.dpb-synopsis-label { display: block !important; font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dpb-brand) !important; font-weight: 500 !important; }
+.dpb-synopsis-text { font-size: 15px !important; color: var(--dpb-ink) !important; line-height: 1.55 !important; padding: 8px 12px; margin: -8px -12px; border-radius: 6px; border: 1px solid transparent; cursor: text; outline: none !important; transition: background 0.2s, border-color 0.2s; }
+.dpb-synopsis-text:hover { background: rgba(64,187,237,0.06); border-color: rgba(64,187,237,0.3); }
+.dpb-synopsis-text:focus { background: rgba(64,187,237,0.10); border-color: var(--dpb-brand); box-shadow: 0 0 0 3px rgba(64,187,237,0.15); }
+.dpb-synopsis-text .dpb-goal-tag { font-weight: 600; color: var(--dpb-brand); }
+.dpb-synopsis-text .dpb-goal-noun { font-style: italic; color: var(--dpb-ink); }
+.dpb-synopsis-tap-hint { font-size: 11px !important; color: var(--dpb-ink-dim) !important; display: flex; align-items: center; gap: 6px; letter-spacing: 0.04em; }
+.dpb-reclass-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px dashed rgba(64,187,237,0.25); }
+.dpb-reclass-label { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.12em; color: var(--dpb-ink-mid) !important; font-weight: 500 !important; }
+.dpb-reclass-select { background: var(--dpb-ground-elev) !important; border: 1px solid var(--dpb-ink-faint) !important; border-radius: 5px !important; color: var(--dpb-ink) !important; font-size: 13px !important; padding: 7px 12px !important; cursor: pointer; outline: none !important; }
+.dpb-reclass-select:focus { border-color: var(--dpb-brand) !important; }
+.dpb-reclass-select option { background: var(--dpb-ground-deep); color: var(--dpb-ink); }
+
+.dpb-callout { background: rgba(64,187,237,0.05); border: 1px solid rgba(64,187,237,0.2); border-radius: 8px; padding: 14px 18px; margin: 24px auto 0; max-width: 640px; display: flex; gap: 12px; align-items: flex-start; text-align: left; }
+.dpb-callout-icon { font-size: 16px !important; color: var(--dpb-brand); flex-shrink: 0; margin-top: 2px; }
+.dpb-callout-text { font-size: 13px !important; color: var(--dpb-ink-mid) !important; line-height: 1.5 !important; }
+
+/* Actions */
+.dpb-actions { display: flex; justify-content: space-between; align-items: center; margin: 36px auto 0; max-width: 720px; gap: 16px; }
+.dpb-actions.dpb-actions-right { justify-content: flex-end; }
+.dpb-hint { font-size: 11px !important; color: var(--dpb-ink-dim) !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500 !important; }
+.dpb-hint kbd { background: var(--dpb-ground-elev); border: 1px solid var(--dpb-ink-faint); border-radius: 3px; padding: 2px 6px; font-size: 10px; color: var(--dpb-ink); font-weight: 500; margin: 0 2px; }
+.dpb-btn { cursor: pointer; font-size: 12px !important; font-weight: 600 !important; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 4px !important; padding: 12px 24px !important; display: inline-flex; align-items: center; gap: 8px; transition: background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.15s; border: 1px solid transparent; }
+.dpb-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.dpb-btn-primary { background: transparent !important; color: var(--dpb-brand) !important; border-color: var(--dpb-brand) !important; }
+.dpb-btn-primary:hover:not(:disabled) { background: var(--dpb-brand) !important; color: var(--dpb-ground) !important; box-shadow: 0 0 24px rgba(64,187,237,0.4) !important; }
+.dpb-btn-ghost { background: transparent !important; color: var(--dpb-ink-mid) !important; border-color: transparent !important; padding: 12px 8px !important; }
+.dpb-btn-ghost:hover { color: var(--dpb-ink) !important; }
+.dpb-btn-outline { background: transparent !important; color: var(--dpb-ink-mid) !important; border-color: var(--dpb-ink-faint) !important; font-size: 11px !important; padding: 8px 14px !important; letter-spacing: 0.12em; }
+.dpb-btn-outline:hover { color: var(--dpb-ink) !important; border-color: rgba(180,182,207,0.4) !important; }
+
+/* Result screen specific */
+.dpb-result-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
+.dpb-result-badge { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.18em; color: var(--dpb-brand-green) !important; display: flex; align-items: center; gap: 8px; font-weight: 500 !important; }
+.dpb-result-exports { display: flex; gap: 8px; flex-wrap: wrap; }
+.dpb-result-h1 { font-size: 38px !important; font-weight: 300 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; margin: 0 0 18px 0 !important; color: var(--dpb-ink) !important; text-align: left; }
+.dpb-result-h1 .dpb-accent { color: var(--dpb-brand) !important; font-weight: 500 !important; }
+
+/* Primary answer card — the hero "this is the topic that answers your goal most directly" moment */
+.dpb-primary-answer {
+  background: linear-gradient(135deg, rgba(64,187,237,0.14) 0%, rgba(234,61,156,0.10) 100%);
+  border: 1px solid var(--dpb-brand);
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin: 0 0 20px 0;
+  text-align: left;
+  box-shadow: 0 0 32px rgba(64,187,237,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.dpb-primary-answer::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 130px; height: 130px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: rgba(64,187,237,0.10);
+  pointer-events: none;
+}
+.dpb-primary-badge {
+  font-size: 10px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--dpb-brand) !important;
+  font-weight: 600 !important;
+  margin-bottom: 10px !important;
+  position: relative;
+  z-index: 1;
+}
+.dpb-primary-label {
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  color: var(--dpb-ink) !important;
+  line-height: 1.3 !important;
+  margin-bottom: 10px !important;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+}
+.dpb-primary-why {
+  font-size: 14px !important;
+  color: var(--dpb-ink) !important;
+  line-height: 1.55 !important;
+  margin-bottom: 14px !important;
+  position: relative;
+  z-index: 1;
+}
+.dpb-primary-loc {
+  font-size: 12px !important;
+  color: var(--dpb-ink-mid) !important;
+  letter-spacing: 0.02em;
+  position: relative;
+  z-index: 1;
+}
+.dpb-primary-loc strong {
+  color: var(--dpb-ink) !important;
+  font-weight: 500 !important;
+}
+
+/* Standalone topic callouts (from below-level courses that were dropped) */
+.dpb-standalone-wrap {
+  margin-top: 18px;
+  padding: 20px 22px;
+  background: rgba(180,182,207,0.06);
+  border: 1px dashed var(--dpb-ink-faint);
+  border-radius: 10px;
+  text-align: left;
+}
+.dpb-standalone-heading {
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--dpb-ink-mid) !important;
+  font-weight: 500 !important;
+  margin-bottom: 14px !important;
+}
+.dpb-standalone-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-top: 1px solid var(--dpb-ink-faint);
+}
+.dpb-standalone-item:first-of-type { border-top: none; padding-top: 0; }
+.dpb-standalone-icon {
+  color: var(--dpb-brand-green);
+  font-size: 16px !important;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.dpb-standalone-body { flex: 1; min-width: 0; }
+.dpb-standalone-label {
+  font-size: 14px !important;
+  color: var(--dpb-ink) !important;
+  font-weight: 500 !important;
+  margin-bottom: 4px;
+  line-height: 1.4 !important;
+}
+.dpb-standalone-why {
+  font-size: 12.5px !important;
+  color: var(--dpb-ink-mid) !important;
+  line-height: 1.5 !important;
+  margin-bottom: 4px;
+}
+.dpb-standalone-loc {
+  font-size: 11px !important;
+  color: var(--dpb-ink-dim) !important;
+  letter-spacing: 0.04em;
+}
+.dpb-standalone-loc strong {
+  color: var(--dpb-ink-mid) !important;
+  font-weight: 500 !important;
+}
+
+/* Empty state — should rarely trigger */
+.dpb-empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--dpb-ink-mid);
+}
+.dpb-empty-icon { font-size: 32px; color: var(--dpb-ink-dim); margin-bottom: 12px; }
+.dpb-empty-title { font-size: 18px !important; color: var(--dpb-ink) !important; margin-bottom: 8px !important; font-weight: 500 !important; }
+.dpb-empty-desc { font-size: 13px !important; color: var(--dpb-ink-mid) !important; max-width: 420px; margin: 0 auto !important; line-height: 1.55 !important; }
+
+/* Print-doc standalone section */
+.dpb-pd-standalone {
+  margin-top: 24pt;
+  padding-top: 18pt;
+  border-top: 1pt solid #ccc;
+}
+.dpb-pd-standalone-heading {
+  font-size: 12pt !important;
+  color: #0d0a2e;
+  margin: 0 0 4pt 0 !important;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+.dpb-pd-standalone-sub {
+  font-size: 9pt !important;
+  color: #555;
+  margin: 0 0 14pt 0 !important;
+  font-style: italic;
+}
+
+.dpb-goal-quote { background: rgba(64,187,237,0.05); border: 1px solid rgba(64,187,237,0.2); border-radius: 10px; padding: 18px 24px; margin: 0 0 28px 0; text-align: left; }
+.dpb-goal-quote-label { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dpb-brand) !important; margin-bottom: 8px !important; font-weight: 500 !important; }
+.dpb-goal-quote-text { font-size: 17px !important; color: var(--dpb-ink) !important; line-height: 1.55 !important; font-weight: 400 !important; }
+.dpb-goal-original-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(64,187,237,0.18); }
+.dpb-goal-original-label { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.12em; color: var(--dpb-ink-dim) !important; display: block; margin-bottom: 4px; }
+.dpb-goal-original-text { font-size: 13px !important; color: var(--dpb-ink-mid) !important; font-style: italic; line-height: 1.5 !important; }
+
+.dpb-meta-strip { display: flex; gap: 32px; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid var(--dpb-ink-faint); border-bottom: 1px solid var(--dpb-ink-faint); margin-bottom: 36px; }
+.dpb-meta-cell { min-width: 0; }
+.dpb-meta-cell-label { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dpb-ink-mid) !important; margin-bottom: 4px !important; font-weight: 500 !important; }
+.dpb-meta-cell-value { font-size: 13px !important; color: var(--dpb-ink) !important; display: flex; align-items: center; gap: 6px; }
+
+.dpb-section-label { font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.18em; color: var(--dpb-ink-mid) !important; margin-bottom: 18px !important; display: block; font-weight: 500 !important; text-align: left; }
+
+/* Course cards with gradient header */
+.dpb-course-card { border: 1px solid rgba(64,187,237,0.15); border-radius: 12px; padding: 28px 32px; margin-bottom: 14px; position: relative; overflow: hidden; text-align: left; }
+.dpb-course-card.dpb-course-1 { background: linear-gradient(135deg, #304e9d 0%, #2a245c 100%); }
+.dpb-course-card.dpb-course-2 { background: linear-gradient(135deg, #40bbed 0%, #304e9d 100%); }
+.dpb-course-card.dpb-course-3 { background: linear-gradient(135deg, #ea3d9c 0%, #2a245c 100%); }
+.dpb-course-card.dpb-course-4 { background: linear-gradient(135deg, #a2c617 0%, #2a245c 100%); }
+.dpb-course-card.dpb-course-5 { background: linear-gradient(135deg, #f18900 0%, #2a245c 100%); }
+.dpb-course-card.dpb-course-6 { background: linear-gradient(135deg, #304e9d 0%, #1c1843 100%); }
+.dpb-course-card.dpb-course-7 { background: linear-gradient(135deg, #f14800 0%, #2a245c 100%); }
+.dpb-course-deco { position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; background: rgba(255,255,255,0.18); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); pointer-events: none; }
+.dpb-course-deco::before { content: ''; position: absolute; inset: 1px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+.dpb-course-1 .dpb-course-deco::before { background: #2a245c; }
+.dpb-course-2 .dpb-course-deco::before { background: #304e9d; }
+.dpb-course-3 .dpb-course-deco::before { background: #2a245c; }
+.dpb-course-4 .dpb-course-deco::before { background: #2a245c; }
+.dpb-course-5 .dpb-course-deco::before { background: #2a245c; }
+.dpb-course-6 .dpb-course-deco::before { background: #1c1843; }
+.dpb-course-7 .dpb-course-deco::before { background: #2a245c; }
+.dpb-course-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; position: relative; z-index: 1; flex-wrap: wrap; }
+.dpb-course-order { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px !important; font-weight: 600 !important; color: var(--dpb-ground-deep) !important; flex-shrink: 0; }
+.dpb-course-1 .dpb-course-order { background: var(--dpb-brand); }
+.dpb-course-2 .dpb-course-order { background: #fff; }
+.dpb-course-3 .dpb-course-order { background: #fff; }
+.dpb-course-4 .dpb-course-order { background: #fff; }
+.dpb-course-5 .dpb-course-order { background: #fff; }
+.dpb-course-6 .dpb-course-order { background: #fff; }
+.dpb-course-7 .dpb-course-order { background: #fff; }
+.dpb-course-tag { font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,255,255,0.7) !important; flex: 1; min-width: 0; font-weight: 500 !important; }
+.dpb-course-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dpb-course-time { font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.85) !important; font-weight: 500 !important; }
+.dpb-course-level-pip { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 10px; border: 1px solid; font-weight: 500 !important; }
+.dpb-course-1 .dpb-course-level-pip { background: rgba(162,198,23,0.25); color: var(--dpb-lvl-novice); border-color: rgba(162,198,23,0.4); }
+.dpb-course-2 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-3 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-4 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-5 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-6 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-7 .dpb-course-level-pip { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+.dpb-course-title { font-size: 26px !important; font-weight: 400 !important; line-height: 1.2 !important; margin: 0 0 8px 0 !important; color: #fff !important; position: relative; z-index: 1; letter-spacing: -0.01em; }
+.dpb-course-desc { font-size: 14px !important; line-height: 1.55 !important; margin: 0 0 22px 0 !important; position: relative; z-index: 1; }
+.dpb-course-1 .dpb-course-desc { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-2 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-course-3 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-course-4 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-course-5 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-course-6 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-course-7 .dpb-course-desc { color: rgba(255,255,255,0.88) !important; }
+.dpb-topic-callout { background: rgba(13,10,46,0.5); border: 1px solid; border-radius: 8px; padding: 18px 20px; position: relative; z-index: 1; }
+.dpb-course-1 .dpb-topic-callout { border-color: rgba(64,187,237,0.25); }
+.dpb-course-2 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-course-3 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-course-4 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-course-5 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-course-6 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-course-7 .dpb-topic-callout { border-color: rgba(255,255,255,0.2); }
+.dpb-topic-callout-label { font-size: 10px !important; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 14px !important; display: flex; align-items: center; gap: 6px; font-weight: 500 !important; }
+.dpb-course-1 .dpb-topic-callout-label { color: var(--dpb-brand) !important; }
+.dpb-course-2 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-course-3 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-course-4 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-course-5 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-course-6 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-course-7 .dpb-topic-callout-label { color: #fff !important; }
+.dpb-topic-list { display: flex; flex-direction: column; gap: 11px; }
+.dpb-topic-row { display: flex; gap: 12px; align-items: flex-start; }
+.dpb-topic-arrow { font-size: 12px !important; margin-top: 4px; flex-shrink: 0; }
+.dpb-course-1 .dpb-topic-arrow { color: var(--dpb-brand); }
+.dpb-course-2 .dpb-topic-arrow { color: #fff; }
+.dpb-course-3 .dpb-topic-arrow { color: #fff; }
+.dpb-course-4 .dpb-topic-arrow { color: #fff; }
+.dpb-course-5 .dpb-topic-arrow { color: #fff; }
+.dpb-course-6 .dpb-topic-arrow { color: #fff; }
+.dpb-course-7 .dpb-topic-arrow { color: #fff; }
+.dpb-topic-name { font-size: 14px !important; color: #fff !important; line-height: 1.45 !important; font-weight: 500 !important; }
+.dpb-topic-why { font-size: 12px !important; margin-top: 3px; line-height: 1.45 !important; }
+.dpb-course-1 .dpb-topic-why { color: rgba(255,255,255,0.58) !important; }
+.dpb-course-2 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-3 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-4 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-5 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-6 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-7 .dpb-topic-why { color: rgba(255,255,255,0.72) !important; }
+.dpb-course-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; position: relative; z-index: 1; flex-wrap: wrap; gap: 12px; }
+.dpb-course-count { font-size: 12px !important; }
+.dpb-course-1 .dpb-course-count { color: rgba(255,255,255,0.6) !important; }
+.dpb-course-2 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-3 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-4 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-5 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-6 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-course-7 .dpb-course-count { color: rgba(255,255,255,0.78) !important; }
+.dpb-btn-white { background: #fff !important; color: var(--dpb-ground-deep) !important; font-weight: 600 !important; font-size: 11px !important; padding: 9px 18px !important; border: none !important; }
+.dpb-btn-white:hover { box-shadow: 0 0 24px rgba(255,255,255,0.3) !important; }
+
+.dpb-level-note { font-size: 13px; color: var(--dpb-ink-mid); margin: -12px 0 32px; padding: 14px 18px; background: rgba(64,187,237,0.05); border-radius: 8px; border-left: 2px solid var(--dpb-brand); line-height: 1.5; text-align: left; }
+
+.dpb-beyond-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; text-align: left; }
+@media (max-width: 560px) { .dpb-beyond-grid { grid-template-columns: 1fr; } }
+.dpb-beyond-card { background: var(--dpb-ground-surface); border: 1px solid var(--dpb-ink-faint); border-radius: 8px; padding: 16px 18px; }
+.dpb-beyond-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.dpb-beyond-icon { font-size: 16px !important; }
+.dpb-beyond-icon[data-tone="green"]  { color: var(--dpb-brand-green); }
+.dpb-beyond-icon[data-tone="blue"]   { color: var(--dpb-brand); }
+.dpb-beyond-icon[data-tone="pink"]   { color: var(--dpb-brand-warm); }
+.dpb-beyond-icon[data-tone="yellow"] { color: var(--dpb-brand-yellow); }
+.dpb-beyond-title { font-size: 14px !important; color: var(--dpb-ink) !important; font-weight: 500 !important; }
+.dpb-beyond-desc { font-size: 12.5px !important; color: var(--dpb-ink-mid) !important; line-height: 1.5 !important; }
+
+.dpb-result-footer { padding: 20px 0 0; border-top: 1px solid var(--dpb-ink-faint); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; text-align: left; }
+.dpb-rebuild-link { font-size: 12px !important; color: var(--dpb-ink-dim) !important; }
+.dpb-rebuild-link button { background: none; border: none; color: var(--dpb-brand) !important; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(64,187,237,0.4); text-underline-offset: 3px; font-size: 12px !important; padding: 0; }
+
+/* Screens */
+.dpb-screen { display: none; }
+.dpb-screen.dpb-is-active { display: block; animation: dpb-fadeIn 0.4s ease; }
+@keyframes dpb-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dpb-fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Toast */
+.dpb-toast { position: fixed; bottom: 24px; right: 24px; background: var(--dpb-ground-elev); border: 1px solid var(--dpb-ink-faint); padding: 12px 18px; border-radius: 8px; font-size: 13px !important; color: var(--dpb-ink) !important; z-index: 9999; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; display: flex; gap: 10px; align-items: center; }
+.dpb-toast.dpb-is-visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .dpb-chrome-top { padding: 0 20px; }
+  .dpb-greeting { font-size: 32px !important; }
+  .dpb-stage { padding: 100px 20px 60px; }
+  .dpb-dhex-5, .dpb-dhex-6 { display: none; }
+  .dpb-result-h1 { font-size: 30px !important; }
+}
+/* ──────────────────────────────────────────────────────────────────
+   PRINT / PDF DOCUMENT
+   The on-screen app is hidden on print; a dedicated .dpb-print-doc
+   block is shown instead. Serif body type for documentary feel,
+   brand-color accents where they add meaning, B&W elsewhere.
+   ────────────────────────────────────────────────────────────────── */
+
+.dpb-print-doc { display: none; }
+
+@media print {
+  @page {
+    size: letter;
+    margin: 14mm 16mm 16mm 16mm;
+  }
+  /* Hide the entire app and any chrome */
+  body * { visibility: hidden !important; }
+  .dpb-print-doc, .dpb-print-doc * { visibility: visible !important; }
+  .dpb-print-doc {
+    display: block !important;
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    background: #fff;
+    color: #0d0a2e;
+  }
+}
+
+/* Always render the document markup off-screen during dev so we can
+   inspect; will be inspected via print preview. */
+.dpb-print-doc {
+  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
+  color: #0d0a2e;
+  background: #fff;
+  font-size: 11pt;
+  line-height: 1.55;
+}
+.dpb-print-doc h1, .dpb-print-doc h2, .dpb-print-doc h3,
+.dpb-print-doc .dpb-pd-label, .dpb-print-doc .dpb-pd-meta-row,
+.dpb-print-doc .dpb-pd-foot, .dpb-print-doc .dpb-pd-prepared {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Brand color stripe + hex motif on page 1 */
+.dpb-pd-header {
+  position: relative;
+  padding: 0 0 18px 0;
+  border-bottom: 1px solid #0d0a2e;
+  margin-bottom: 22px;
+}
+.dpb-pd-stripe {
+  height: 6px;
+  background: linear-gradient(90deg, #304e9d 0%, #40bbed 45%, #a2c617 100%);
+  margin-bottom: 18px;
+  border-radius: 2px;
+}
+.dpb-pd-hex {
+  position: absolute;
+  top: 22px;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: #40bbed;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  opacity: 0.10;
+}
+.dpb-pd-prepared {
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #5a5878;
+  margin-bottom: 8px;
+}
+.dpb-pd-title {
+  font-size: 26pt;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0 0 6px 0;
+  color: #0d0a2e;
+}
+.dpb-pd-title-accent { color: #304e9d; }
+.dpb-pd-subtitle {
+  font-size: 10pt;
+  color: #5a5878;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Summary block — synopsis + meta */
+.dpb-pd-summary {
+  background: #f6f7fb;
+  border-left: 3px solid #304e9d;
+  padding: 12px 16px;
+  margin: 0 0 22px 0;
+}
+.dpb-pd-summary-label {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #304e9d;
+  margin-bottom: 6px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+}
+.dpb-pd-summary-text {
+  font-size: 11pt;
+  color: #0d0a2e;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+.dpb-pd-summary-text strong { color: #304e9d; font-weight: 700; }
+.dpb-pd-summary-original {
+  font-size: 9.5pt;
+  color: #5a5878;
+  font-style: italic;
+  padding-top: 8px;
+  border-top: 1px dashed #c8c5d8;
+  margin: 0;
+}
+
+/* Meta strip — segment / level / time / generated */
+.dpb-pd-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-top: 1px solid #c8c5d8;
+  border-bottom: 1px solid #c8c5d8;
+  margin-bottom: 26px;
+}
+.dpb-pd-meta {
+  flex: 1;
+  min-width: 110px;
+}
+.dpb-pd-meta-label {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #5a5878;
+  margin-bottom: 3px;
+}
+.dpb-pd-meta-value {
+  font-size: 10pt;
+  color: #0d0a2e;
+}
+
+/* Section heading */
+.dpb-pd-section-heading {
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #5a5878;
+  margin: 0 0 14px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #c8c5d8;
+  font-weight: 600;
+}
+
+/* Course block — one per page break preferred */
+.dpb-pd-course {
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.dpb-pd-course + .dpb-pd-course { page-break-before: always; break-before: page; }
+
+.dpb-pd-course-header {
+  background: linear-gradient(135deg, #304e9d 0%, #2a245c 100%);
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.dpb-pd-course.dpb-pd-course-2 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #40bbed 0%, #304e9d 100%);
+}
+.dpb-pd-course.dpb-pd-course-3 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #ea3d9c 0%, #2a245c 100%);
+}
+.dpb-pd-course.dpb-pd-course-4 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #a2c617 0%, #2a245c 100%);
+}
+.dpb-pd-course.dpb-pd-course-5 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #f18900 0%, #2a245c 100%);
+}
+.dpb-pd-course.dpb-pd-course-6 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #304e9d 0%, #1c1843 100%);
+}
+.dpb-pd-course.dpb-pd-course-7 .dpb-pd-course-header {
+  background: linear-gradient(135deg, #f14800 0%, #2a245c 100%);
+}
+.dpb-pd-course-num {
+  display: inline-block;
+  width: 22px; height: 22px;
+  background: rgba(255,255,255,0.95);
+  color: #0d0a2e;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 22px;
+  font-size: 11pt;
+  font-weight: 700;
+  margin-right: 10px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-course-tag {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+  margin-bottom: 6px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-course-title {
+  font-size: 17pt;
+  font-weight: 300;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+.dpb-pd-course-meta {
+  font-size: 9pt;
+  opacity: 0.85;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Track-completion line — for the worksheet job */
+.dpb-pd-track {
+  display: flex;
+  gap: 18px;
+  font-size: 8.5pt;
+  padding: 6px 20px;
+  background: #f6f7fb;
+  border: 1px solid #c8c5d8;
+  border-top: none;
+  color: #5a5878;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-track-cell { flex: 1; }
+.dpb-pd-track-cell strong {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: #5a5878;
+  display: inline-block;
+  margin-right: 6px;
+}
+.dpb-pd-track-line {
+  display: inline-block;
+  border-bottom: 1px solid #8c8aa8;
+  min-width: 90px;
+  height: 12px;
+  vertical-align: bottom;
+}
+
+/* Course body — description + topics */
+.dpb-pd-course-body {
+  border: 1px solid #c8c5d8;
+  border-top: none;
+  padding: 16px 20px 18px;
+  background: #fff;
+  border-radius: 0 0 4px 4px;
+}
+.dpb-pd-course-desc {
+  font-size: 10pt;
+  line-height: 1.55;
+  color: #2a285a;
+  margin: 0 0 18px 0;
+  font-style: italic;
+}
+
+/* The "Pay extra attention" topic block — the worksheet heart */
+.dpb-pd-topics-label {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #304e9d;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-topic {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px dotted #d8d5e5;
+}
+.dpb-pd-topic:last-child { border-bottom: none; }
+.dpb-pd-checkbox {
+  width: 14px; height: 14px;
+  border: 1.5px solid #304e9d;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.dpb-pd-topic-body { flex: 1; }
+.dpb-pd-topic-name {
+  font-size: 10pt;
+  color: #0d0a2e;
+  font-weight: 600;
+  margin: 0 0 3px 0;
+  line-height: 1.4;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-topic-why {
+  font-size: 9.5pt;
+  color: #2a285a;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Notes area per course */
+.dpb-pd-notes {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #c8c5d8;
+}
+.dpb-pd-notes-label {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #5a5878;
+  margin-bottom: 8px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-notes-line {
+  border-bottom: 1px solid #c8c5d8;
+  height: 16px;
+  margin-bottom: 4px;
+}
+
+/* Beyond the courses */
+.dpb-pd-beyond {
+  margin-top: 24px;
+  page-break-before: always;
+  break-before: page;
+}
+.dpb-pd-beyond-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+}
+.dpb-pd-beyond-item {
+  padding: 10px 12px;
+  border: 1px solid #c8c5d8;
+  border-left: 3px solid #304e9d;
+  border-radius: 2px;
+}
+.dpb-pd-beyond-item:nth-child(2) { border-left-color: #40bbed; }
+.dpb-pd-beyond-item:nth-child(3) { border-left-color: #ea3d9c; }
+.dpb-pd-beyond-item:nth-child(4) { border-left-color: #f18900; }
+.dpb-pd-beyond-title {
+  font-size: 9.5pt;
+  font-weight: 600;
+  color: #0d0a2e;
+  margin: 0 0 3px 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-beyond-desc {
+  font-size: 9pt;
+  color: #2a285a;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Footer — runs on every page via @page */
+.dpb-pd-foot {
+  margin-top: 28px;
+  padding-top: 10px;
+  border-top: 1px solid #c8c5d8;
+  font-size: 8pt;
+  color: #5a5878;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dpb-pd-foot strong { color: #0d0a2e; font-weight: 600; }
+
+</style>
+</head>
+<body>
+<div class="dpb-root" id="dpb-app">
+
+  <!-- Drifting hex field -->
+  <div class="dpb-hex-field" aria-hidden="true">
+    <div class="dpb-dhex dpb-dhex-1"></div>
+    <div class="dpb-dhex dpb-dhex-2 dpb-is-outline"></div>
+    <div class="dpb-dhex dpb-dhex-3"></div>
+    <div class="dpb-dhex dpb-dhex-4"></div>
+    <div class="dpb-dhex dpb-dhex-5"></div>
+    <div class="dpb-dhex dpb-dhex-6 dpb-is-outline"></div>
+  </div>
+  <div class="dpb-grid"></div>
+  <div class="dpb-vignette"></div>
+
+  <!-- Top chrome -->
+  <div class="dpb-chrome-top">
+    <div class="dpb-brand-mark">
+      <span class="dpb-brand-dot"></span>
+      <strong>Dimensions</strong> <span>Learning</span>
+    </div>
+    <div class="dpb-progress-hex" id="dpb-progress-strip">
+      <div class="dpb-phex dpb-is-active"></div>
+      <div class="dpb-phex"></div>
+      <div class="dpb-phex"></div>
+      <div class="dpb-phex"></div>
+      <div class="dpb-phex"></div>
+    </div>
+    <div class="dpb-step-indicator" id="dpb-step-indicator">
+      <strong>01</strong> / 04
+    </div>
+  </div>
+
+  <!-- ═══════════════════ SCREEN 1: name + welcome ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-1 dpb-is-active" data-screen="1">
+    <div class="dpb-stage">
+      <div class="dpb-content">
+        <div class="dpb-eyebrow">Welcome</div>
+        <h1 class="dpb-greeting">Hi <span class="dpb-name" id="dpb-greeting-name-1">there</span>, let's get to know you.</h1>
+        <div class="dpb-sub">Four short questions. About three minutes. Your answers shape the path.</div>
+        <div class="dpb-input-wrap">
+          <label class="dpb-input-label" for="dpb-name">What should we call you?</label>
+          <div class="dpb-input-field-wrap">
+            <input type="text" class="dpb-text-input" id="dpb-name" placeholder="Your name" autocomplete="off">
+            <div class="dpb-input-underline"></div>
+          </div>
+          <div class="dpb-actions">
+            <div class="dpb-hint">Press <kbd>Enter</kbd> to continue</div>
+            <button type="button" class="dpb-btn dpb-btn-primary" data-action="next-1" disabled>Continue →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCREEN 2: segment ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-2" data-screen="2">
+    <div class="dpb-stage">
+      <div class="dpb-content dpb-content-wide">
+        <div class="dpb-eyebrow">About your work</div>
+        <h1 class="dpb-greeting"><span class="dpb-name dpb-name-2">there</span>, which best describes where you work?</h1>
+        <div class="dpb-sub">Pick one. This shapes the examples we use, not what you can access.</div>
+
+        <div class="dpb-tile-grid" id="dpb-segments">
+          <button type="button" class="dpb-tile" data-seg="Academic" data-value="Academic">
+            <span class="dpb-tile-icon">⌬</span>
+            <span class="dpb-tile-body">
+              <span class="dpb-tile-title">Academic</span>
+              <span class="dpb-tile-desc">Researchers, librarians, RIS teams. Search, benchmark, REF-style reporting.</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-tile" data-seg="Industry" data-value="Industry">
+            <span class="dpb-tile-icon">▣</span>
+            <span class="dpb-tile-body">
+              <span class="dpb-tile-title">Industry research</span>
+              <span class="dpb-tile-desc">Pharma, biotech, tech. Competitive intel, tech scouting, patent landscapes.</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-tile" data-seg="Nonprofit" data-value="Nonprofit/Government">
+            <span class="dpb-tile-icon">⌂</span>
+            <span class="dpb-tile-body">
+              <span class="dpb-tile-title">Government or nonprofit</span>
+              <span class="dpb-tile-desc">Funders, agencies, foundations. Portfolio analysis, policy impact, landscape mapping.</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-tile" data-seg="Publisher" data-value="Publishers">
+            <span class="dpb-tile-icon">❐</span>
+            <span class="dpb-tile-body">
+              <span class="dpb-tile-title">Publisher</span>
+              <span class="dpb-tile-desc">Editorial, marketing, strategy teams. Author discovery, reviewer pools, journal benchmarks.</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-tile" data-seg="Other" data-value="Other">
+            <span class="dpb-tile-icon">⋯</span>
+            <span class="dpb-tile-body">
+              <span class="dpb-tile-title">Something else, or I wear several hats</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="dpb-actions">
+          <button type="button" class="dpb-btn dpb-btn-ghost" data-action="back">← Back</button>
+          <button type="button" class="dpb-btn dpb-btn-primary" data-action="next-2" disabled>Continue →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCREEN 3: goal ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-3" data-screen="3">
+    <div class="dpb-stage">
+      <div class="dpb-content dpb-content-wide">
+        <div class="dpb-eyebrow">Your goal</div>
+        <h1 class="dpb-greeting">What do you want to <em style="color: var(--dpb-brand); font-style: normal; font-weight: 500;">do</em> with Dimensions, <span class="dpb-name dpb-name-3">there</span>?</h1>
+        <div class="dpb-sub">In your own words. The more specific the better — we'll match topics to what you describe.</div>
+
+        <div class="dpb-textarea-wrap">
+          <textarea
+            class="dpb-textarea"
+            id="dpb-goal"
+            placeholder="e.g. I need to find all the papers our institution published last year that were cited in policy documents, so I can show our impact to leadership."
+            maxlength="500"></textarea>
+          <div class="dpb-textarea-count"><span id="dpb-goal-count">0</span> / 500</div>
+        </div>
+
+        <div class="dpb-divider">Or pick a starting point</div>
+
+        <div class="dpb-prompt-grid" id="dpb-prompts">
+          <button type="button" class="dpb-prompt-chip" data-tone="blue" data-prompt="find-papers">
+            <span class="dpb-prompt-icon">⚲</span>
+            <span>
+              <span class="dpb-prompt-title">Find papers on a topic, fast</span>
+              <span class="dpb-prompt-desc">Build a precise search, filter the noise out</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-prompt-chip" data-tone="orange" data-prompt="track-funding">
+            <span class="dpb-prompt-icon">◐</span>
+            <span>
+              <span class="dpb-prompt-title">Track funding in my field</span>
+              <span class="dpb-prompt-desc">See who's funding what, where, and how it's trending</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-prompt-chip" data-tone="pink" data-prompt="benchmark">
+            <span class="dpb-prompt-icon">⏧</span>
+            <span>
+              <span class="dpb-prompt-title">Benchmark my institution</span>
+              <span class="dpb-prompt-desc">Compare outputs, funding, and impact against peers</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-prompt-chip" data-tone="green" data-prompt="show-impact">
+            <span class="dpb-prompt-icon">◊</span>
+            <span>
+              <span class="dpb-prompt-title">Show research impact to leadership</span>
+              <span class="dpb-prompt-desc">Pull citation, Altmetric, and policy signals into a story</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-prompt-chip" data-tone="yellow" data-prompt="reading-list">
+            <span class="dpb-prompt-icon">❧</span>
+            <span>
+              <span class="dpb-prompt-title">Build a reading list, fast</span>
+              <span class="dpb-prompt-desc">Run a similar-document search from a seed paper</span>
+            </span>
+          </button>
+          <button type="button" class="dpb-prompt-chip" data-tone="muted" data-prompt="exploring">
+            <span class="dpb-prompt-icon">✦</span>
+            <span>
+              <span class="dpb-prompt-title">I'm just exploring</span>
+              <span class="dpb-prompt-desc">I want a tour of what Dimensions can do</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="dpb-actions">
+          <button type="button" class="dpb-btn dpb-btn-ghost" data-action="back">← Back</button>
+          <button type="button" class="dpb-btn dpb-btn-primary" data-action="next-3" disabled>Continue →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCREEN 4: comfort ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-4" data-screen="4">
+    <div class="dpb-stage">
+      <div class="dpb-content">
+        <div class="dpb-eyebrow">Comfort level</div>
+        <h1 class="dpb-greeting"><span class="dpb-name dpb-name-4">there</span>, how comfortable are you with Dimensions today?</h1>
+        <div class="dpb-sub">Pick the line that sounds most like you this week. We'll start the path where you actually are.</div>
+
+        <div class="dpb-comfort-list" id="dpb-comfort">
+          <button type="button" class="dpb-comfort-row" data-level="Novice">
+            <span class="dpb-comfort-icon">❀</span>
+            <span class="dpb-comfort-body">
+              <span class="dpb-comfort-quote">"I've never opened Dimensions."</span>
+              <span class="dpb-comfort-desc">Brand new. Maybe heard about it from a colleague. Want a proper introduction before doing anything specific.</span>
+            </span>
+            <span class="dpb-level-pip">Novice</span>
+          </button>
+          <button type="button" class="dpb-comfort-row" data-level="Beginner">
+            <span class="dpb-comfort-icon">◉</span>
+            <span class="dpb-comfort-body">
+              <span class="dpb-comfort-quote">"I've poked around but I get stuck."</span>
+              <span class="dpb-comfort-desc">Can run a search, but the filters and results panels still feel like a wall. Wish someone would show me the shortcuts.</span>
+            </span>
+            <span class="dpb-level-pip">Beginner</span>
+          </button>
+          <button type="button" class="dpb-comfort-row" data-level="Intermediate">
+            <span class="dpb-comfort-icon">⚙</span>
+            <span class="dpb-comfort-body">
+              <span class="dpb-comfort-quote">"I use it regularly for specific tasks."</span>
+              <span class="dpb-comfort-desc">Comfortable with search and filters. Want to sharpen analytics, citations, or a feature I haven't touched yet.</span>
+            </span>
+            <span class="dpb-level-pip">Intermediate</span>
+          </button>
+          <button type="button" class="dpb-comfort-row" data-level="Expert">
+            <span class="dpb-comfort-icon">⚡</span>
+            <span class="dpb-comfort-body">
+              <span class="dpb-comfort-quote">"Colleagues come to me with Dimensions questions."</span>
+              <span class="dpb-comfort-desc">Power user. Looking for edge cases, advanced workflows, or to fill specific gaps like DSL or the API.</span>
+            </span>
+            <span class="dpb-level-pip">Expert</span>
+          </button>
+        </div>
+
+        <div class="dpb-actions">
+          <button type="button" class="dpb-btn dpb-btn-ghost" data-action="back">← Back</button>
+          <button type="button" class="dpb-btn dpb-btn-primary" data-action="next-4" disabled>Continue →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCREEN 5: review ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-5" data-screen="5">
+    <div class="dpb-stage">
+      <div class="dpb-content">
+        <div class="dpb-eyebrow">Quick check</div>
+        <h1 class="dpb-greeting">Let's make sure we're on the same page<span id="dpb-review-name-suffix"></span>.</h1>
+        <div class="dpb-sub">Tap the synopsis to edit it, or tap Edit on any card to change a step.</div>
+
+        <div class="dpb-review-list" id="dpb-review-list"></div>
+
+        <div class="dpb-callout">
+          <span class="dpb-callout-icon">ⓘ</span>
+          <span class="dpb-callout-text">Your path will be a planning document you can save, share with your team, or export. Nothing is final until you decide it is.</span>
+        </div>
+
+        <div class="dpb-actions">
+          <button type="button" class="dpb-btn dpb-btn-ghost" data-action="back">← Back</button>
+          <button type="button" class="dpb-btn dpb-btn-primary" data-action="build">Build my path ✦</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ RESULT SCREEN ═══════════════════ -->
+  <section class="dpb-screen dpb-screen-result" data-screen="result">
+    <div class="dpb-stage" style="align-items: flex-start;">
+      <div class="dpb-content" style="max-width: 820px; text-align: left;">
+
+        <div class="dpb-result-topbar">
+          <div class="dpb-result-badge">✓ Your custom path</div>
+          <div class="dpb-result-exports">
+            <button type="button" class="dpb-btn dpb-btn-outline" data-action="export-pdf">↓ Print or save PDF</button>
+            <button type="button" class="dpb-btn dpb-btn-outline" data-action="copy-link">⎘ Copy as text</button>
+          </div>
+        </div>
+
+        <h1 class="dpb-result-h1">A path for <span class="dpb-accent" id="dpb-result-name">you</span>, built around one goal.</h1>
+
+        <div class="dpb-goal-quote">
+          <div class="dpb-goal-quote-label">What we built your path around</div>
+          <div class="dpb-goal-quote-text" id="dpb-result-synopsis">—</div>
+          <div class="dpb-goal-original-wrap">
+            <span class="dpb-goal-original-label">In your own words</span>
+            <span class="dpb-goal-original-text" id="dpb-result-goal">—</span>
+          </div>
+        </div>
+
+        <div class="dpb-meta-strip">
+          <div class="dpb-meta-cell">
+            <div class="dpb-meta-cell-label">Segment</div>
+            <div class="dpb-meta-cell-value" id="dpb-result-segment">—</div>
+          </div>
+          <div class="dpb-meta-cell">
+            <div class="dpb-meta-cell-label">Starting level</div>
+            <div class="dpb-meta-cell-value" id="dpb-result-level">—</div>
+          </div>
+          <div class="dpb-meta-cell">
+            <div class="dpb-meta-cell-label">Total time</div>
+            <div class="dpb-meta-cell-value" id="dpb-result-total-time">—</div>
+          </div>
+          <div class="dpb-meta-cell">
+            <div class="dpb-meta-cell-label">Generated</div>
+            <div class="dpb-meta-cell-value" id="dpb-result-date">—</div>
+          </div>
+        </div>
+
+        <div class="dpb-section-label">Start here · in this order</div>
+        <div id="dpb-result-courses"></div>
+
+        <div class="dpb-section-label" style="margin-top: 28px;">Beyond the courses · once you're in Dimensions</div>
+        <div class="dpb-beyond-grid">
+          <div class="dpb-beyond-card">
+            <div class="dpb-beyond-head">
+              <span class="dpb-beyond-icon" data-tone="green">✦</span>
+              <span class="dpb-beyond-title">Try AI Discovery in-product</span>
+            </div>
+            <div class="dpb-beyond-desc" id="dpb-beyond-ai">Ask a plain-English question and let Dimensions build the search for you.</div>
+          </div>
+          <div class="dpb-beyond-card">
+            <div class="dpb-beyond-head">
+              <span class="dpb-beyond-icon" data-tone="blue">⛑</span>
+              <span class="dpb-beyond-title">Dimensions Support Centre</span>
+            </div>
+            <div class="dpb-beyond-desc">help.dimensions.ai — Quick Start Guide, funder coverage, alert setup. Bookmark it.</div>
+          </div>
+          <div class="dpb-beyond-card">
+            <div class="dpb-beyond-head">
+              <span class="dpb-beyond-icon" data-tone="pink">⛁</span>
+              <span class="dpb-beyond-title">ReadCube / Papers Pro</span>
+            </div>
+            <div class="dpb-beyond-desc">Once you've found the papers, "Chat with PDF" lets you ask them questions directly.</div>
+          </div>
+          <div class="dpb-beyond-card">
+            <div class="dpb-beyond-head">
+              <span class="dpb-beyond-icon" data-tone="yellow">⏰</span>
+              <span class="dpb-beyond-title">Set up weekly alerts</span>
+            </div>
+            <div class="dpb-beyond-desc">After DM-101's "Saving and exporting" topic, turn your best searches into recurring intelligence.</div>
+          </div>
+        </div>
+
+        <div class="dpb-result-footer">
+          <div class="dpb-rebuild-link">
+            Want a different angle? <button type="button" data-action="rebuild">Rebuild from a new goal</button>
+          </div>
+          <button type="button" class="dpb-btn dpb-btn-primary" data-action="start-course">Start course 1 →</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="dpb-toast" id="dpb-toast"><span>✓</span><span id="dpb-toast-text">Done</span></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRINT DOCUMENT
+     Hidden in the on-screen UI; populated by buildPrintDoc() and
+     shown only when the user invokes Export PDF.
+     ════════════════════════════════════════════════════════════════ -->
+<div class="dpb-print-doc" id="dpb-print-doc" aria-hidden="true">
+  <div class="dpb-pd-header">
+    <div class="dpb-pd-stripe"></div>
+    <div class="dpb-pd-hex"></div>
+    <div class="dpb-pd-prepared" id="dpb-pd-prepared">Prepared for · Generated</div>
+    <h1 class="dpb-pd-title">Your <span class="dpb-pd-title-accent">Dimensions</span> Learning Path</h1>
+    <p class="dpb-pd-subtitle">A working document — tick topics as you complete them, jot notes as you go.</p>
+  </div>
+
+  <div class="dpb-pd-summary">
+    <div class="dpb-pd-summary-label">What we built this around</div>
+    <p class="dpb-pd-summary-text" id="dpb-pd-summary-text">—</p>
+    <p class="dpb-pd-summary-original" id="dpb-pd-summary-original">In your own words: —</p>
+  </div>
+
+  <div class="dpb-pd-meta-row">
+    <div class="dpb-pd-meta">
+      <div class="dpb-pd-meta-label">Segment</div>
+      <div class="dpb-pd-meta-value" id="dpb-pd-meta-segment">—</div>
+    </div>
+    <div class="dpb-pd-meta">
+      <div class="dpb-pd-meta-label">Starting level</div>
+      <div class="dpb-pd-meta-value" id="dpb-pd-meta-level">—</div>
+    </div>
+    <div class="dpb-pd-meta">
+      <div class="dpb-pd-meta-label">Total time</div>
+      <div class="dpb-pd-meta-value">~60 min · 2 courses</div>
+    </div>
+    <div class="dpb-pd-meta">
+      <div class="dpb-pd-meta-label">Generated</div>
+      <div class="dpb-pd-meta-value" id="dpb-pd-meta-date">—</div>
+    </div>
+  </div>
+
+  <div class="dpb-pd-section-heading">Your courses · take them in this order</div>
+
+  <div id="dpb-pd-courses"></div>
+
+  <div class="dpb-pd-beyond">
+    <div class="dpb-pd-section-heading">Beyond the courses · once you're inside Dimensions</div>
+    <div class="dpb-pd-beyond-grid">
+      <div class="dpb-pd-beyond-item">
+        <div class="dpb-pd-beyond-title">AI Discovery in-product</div>
+        <div class="dpb-pd-beyond-desc" id="dpb-pd-ai">Ask a plain-English question and let Dimensions build the search for you.</div>
+      </div>
+      <div class="dpb-pd-beyond-item">
+        <div class="dpb-pd-beyond-title">Dimensions Support Centre</div>
+        <div class="dpb-pd-beyond-desc">help.dimensions.ai — Quick Start Guide, funder coverage, alert setup.</div>
+      </div>
+      <div class="dpb-pd-beyond-item">
+        <div class="dpb-pd-beyond-title">ReadCube / Papers Pro</div>
+        <div class="dpb-pd-beyond-desc">Once you've found the papers, "Chat with PDF" lets you ask them questions directly.</div>
+      </div>
+      <div class="dpb-pd-beyond-item">
+        <div class="dpb-pd-beyond-title">Set up weekly alerts</div>
+        <div class="dpb-pd-beyond-desc">Turn your best searches into recurring intelligence delivered to your inbox.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dpb-pd-foot">
+    <div>
+      <strong>Digital Science · Dimensions Learning Path</strong><br>
+      Rebuild your path at any time from the Dimensions training portal.
+    </div>
+    <div style="text-align:right">
+      <strong id="dpb-pd-foot-name">—</strong><br>
+      <span id="dpb-pd-foot-date">—</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ───────────────────────────────────────────────────────────────────
+  // STATE
+  // ───────────────────────────────────────────────────────────────────
+  const state = {
+    step: 1,
+    name: '',
+    segment: null,        // 'Academic' | 'Industry' | 'Nonprofit/Government' | 'Publishers' | 'Other'
+    goalText: '',
+    selectedPrompt: null, // 'find-papers' | 'track-funding' | etc.
+    level: null,          // 'Novice' | 'Beginner' | 'Intermediate' | 'Expert'
+    synopsis: '',         // editable, rule-generated rephrase shown on review screen
+    synopsisEdited: false,// true once the user has touched the synopsis text
+    effectivePrompt: null // the goal-type the recommendation should use (reclassify dropdown controls this)
+  };
+
+  const STEPS = [
+    { id: 1, name: 'Welcome' },
+    { id: 2, name: 'About your work' },
+    { id: 3, name: 'Your goal' },
+    { id: 4, name: 'Comfort level' },
+    { id: 5, name: 'Review' }
+  ];
+
+  // ───────────────────────────────────────────────────────────────────
+  // CONTENT: Live courses (DM-101, DM-102, DM-103) with all topics
+  // and subtopics. Adding a fourth course later just means appending
+  // another entry here — the render loops, meta strip total time, and
+  // print doc all iterate over Object.keys(COURSES) so no other edits
+  // are needed.
+  // ───────────────────────────────────────────────────────────────────
+  const COURSES = {
+    'DM-101': {
+      id: 'DM-101',
+      shortName: 'Dimensions 101',
+      seriesTag: 'Getting Started',
+      title: 'Getting Started with Dimensions',
+      time: 40,
+      level: 'Novice',
+      desc: 'The foundation: how Dimensions enriches data across 165M+ publications, grants, patents, trials and policy — the three basic search types, the left-menu interface, filters, and how to read results as a connected picture of research.',
+      topics: [
+        {
+          key: 'intro',
+          label: 'What is Dimensions? (the linked-research database)',
+          keywords: ['what is dimensions', 'introduction', 'overview', 'orientation', 'getting started', 'basics', 'linked research database'],
+          goals: {
+            'exploring': { pri: 1, why: 'The full tour: what Dimensions is, who it\'s for, what the content types actually are.' }
+          }
+        },
+        {
+          key: 'enrichment',
+          label: 'Data and Enrichment (institution IDs, article-level classification, concept extraction, disambiguation, reference extraction)',
+          keywords: ['enrichment', 'affiliation', 'affiliations', 'institution names', 'disambiguation', 'article-level classification', 'concept extraction', 'reference extraction', 'AI enrichment', 'grid', 'ror'],
+          goals: {
+            'benchmark': { pri: 1, why: 'Understand how affiliations and categories get mapped — the foundation of any fair comparison.' },
+            'show-impact': { pri: 1, why: 'Know what the data actually links — grants → publications → policy → patents — before you cite it to leadership.' }
+          }
+        },
+        {
+          key: 'searches',
+          label: 'Basic Search modes (Full Data, Title & Abstract, DOI)',
+          keywords: ['basic search', 'full text search', 'full data search', 'title and abstract', 'TIAB', 'DOI search', 'search modes', 'search type', 'first search'],
+          goals: {
+            'find-papers': { pri: 1, why: 'Learn the three search types so you pick the right one for the question.' },
+            'exploring': { pri: 2, why: 'The three ways Dimensions lets you start a search, and when each one fits.' }
+          }
+        },
+        {
+          key: 'similar-docs',
+          label: 'Similar Documents Search (paste an abstract, find related work)',
+          keywords: ['similar documents', 'similar papers', 'similar publications', 'related papers', 'related work', 'like this paper', 'more like this', 'paste text', 'paste abstract', 'reading list', 'literature review', 'related to this'],
+          goals: {
+            'reading-list': { pri: 1, why: 'Similar Documents Search is the fastest path from one paper to ten you should also read — paste an abstract, get related work back.' },
+            'find-papers': { pri: 2, why: 'When you already have one good paper, Similar Documents finds the ones you missed.' }
+          }
+        },
+        {
+          key: 'saving',
+          label: 'Save or Export a search (Favorites, alerts, Export center)',
+          keywords: ['save search', 'saved search', 'favorites', 'favourite', 'export', 'export center', 'alert', 'weekly alert', 'monitor', 'download results', 'CSV', 'RIS', 'reuse search'],
+          goals: {
+            'find-papers': { pri: 3, why: 'Save the searches that work, so you never rebuild the same query.' },
+            'track-funding': { pri: 2, why: 'Set weekly alerts so funding shifts come to you.' },
+            'reading-list': { pri: 3, why: 'Favorites and the Export Center, so the list doesn\'t evaporate.' }
+          }
+        },
+        {
+          key: 'interface',
+          label: 'Left Menu Orientation (Search & Explore, Favorites, Export center, Apps, AI Assistant)',
+          keywords: ['left menu', 'navigation', 'menu', 'sidebar', 'interface', 'layout', 'ai assistant', 'apps', 'support'],
+          goals: {
+            'exploring': { pri: 2, why: 'The map of the interface — left menu, content tabs, AI Assistant.' }
+          }
+        },
+        {
+          key: 'filters',
+          label: 'Search Filters (source-specific + core filters like Funder, Organization, Research Categories)',
+          keywords: ['filter', 'filters', 'narrow results', 'refine search', 'publication year', 'open access', 'source filter', 'category filter', 'location filter', 'funder filter'],
+          goals: {
+            'find-papers': { pri: 2, why: 'Where most of the noise gets removed. Filters are the difference between 50,000 hits and 200 useful ones.' },
+            'benchmark': { pri: 2, why: 'Slice peer sets by year, category, and source to make fair comparisons.' }
+          }
+        },
+        {
+          key: 'results',
+          label: 'Interpreting Search Results (cross-source view, sort by Relevance, FCR, RCR, Altmetric)',
+          keywords: ['interpret results', 'results page', 'sort results', 'sort by', 'citation count', 'altmetric', 'relevance sort', 'cross-source', 'lifecycle'],
+          goals: {
+            'find-papers': { pri: 2, why: 'Read a results page like a map, not a wall of citations.' },
+            'show-impact': { pri: 2, why: 'A results set is a research lifecycle map — grants, papers, patents, policy — not a citation list.' }
+          }
+        },
+        {
+          key: 'ai-summary',
+          label: 'Results › AI summarisation (single-record TL;DR + multi-record synthesis across 10 papers)',
+          keywords: ['AI summary', 'ai summarize', 'summarize', 'summarise', 'TLDR', 'TL;DR', 'multi-record', 'cumulative summary', 'brief', 'key findings', 'condense', 'digest'],
+          goals: {
+            'reading-list': { pri: 2, why: 'Multi-record AI summarisation distills up to 10 papers into a single brief.' },
+            'show-impact': { pri: 1, why: 'Multi-record AI summarisation turns up to 10 publications into one narrative — the story leadership actually reads.' }
+          }
+        },
+        {
+          key: 'analytical-views',
+          label: 'The Analytical Views panel (a pivot table over your result set)',
+          keywords: ['analytical view', 'analytical views', 'analytics', 'visualization', 'visualisation', 'pivot table', 'chart', 'aggregate', 'birds eye view'],
+          goals: {
+            'benchmark': { pri: 1, why: 'The panels that turn a result set into a benchmark.' },
+            'exploring': { pri: 3, why: 'The most magical thing in Dimensions is what happens after you search.' }
+          }
+        },
+        {
+          key: 'timeline',
+          label: 'Analytical Views › Timeline (up to 50 years of trend data)',
+          keywords: ['timeline', 'over time', 'trend', 'trending', 'historical', 'growth', 'accelerating', 'stalled', '50 years', 'chronology'],
+          goals: {
+            'track-funding': { pri: 1, why: 'Timeline is where funding shifts become visible — spot the moment a space accelerated or stalled.' }
+          }
+        },
+        {
+          key: 'funders-heatmap',
+          label: 'Analytical Views › Heatmap (Funders × Research Organizations)',
+          keywords: ['heatmap', 'funding pattern', 'who funds who', 'funder chart', 'funding flow', 'funder vs organization', 'competitive intelligence'],
+          goals: {
+            'track-funding': { pri: 1, why: 'The single most relevant view for spotting funding patterns at a glance — funders on one axis, organizations on the other.' }
+          }
+        },
+        {
+          key: 'places-geomap',
+          label: 'Analytical Views › Geomap (geographic distribution)',
+          keywords: ['geomap', 'map', 'geographic', 'geography', 'country', 'region', 'location', 'world map'],
+          goals: {}
+        },
+        {
+          key: 'researchers-network',
+          label: 'Analytical Views › Network (co-authorship + citation, bridge researchers)',
+          keywords: ['network', 'co-author', 'coauthorship', 'collaboration', 'bridge researcher', 'network map', 'connections', 'silo'],
+          goals: {
+            'benchmark': { pri: 2, why: 'Network view shows collaboration patterns at the institutional level.' }
+          }
+        }
+      ]
+    },
+    'DM-102': {
+      id: 'DM-102',
+      shortName: 'Dimensions 102',
+      seriesTag: 'Search & Discovery',
+      title: 'Refine Your Search and AI Discovery',
+      time: 20,
+      level: 'Beginner',
+      desc: 'Nested Boolean logic, syntax rules that actually matter, filters and Groups, researcher and organization profiles, Funder outputs, Similar Documents Search, AI Discovery (NLQ + Topic Refine), and article-level Research Categories.',
+      topics: [
+        {
+          key: 'boolean',
+          label: 'Boolean Operators (AND, OR, NOT — capitalised, with parentheses)',
+          keywords: ['boolean', 'AND OR NOT', 'operator', 'combining terms', 'query logic', 'search operator'],
+          goals: {
+            'find-papers': { pri: 1, why: 'AND, OR, NOT is the difference between 50,000 hits and the 200 you wanted.' },
+            'exploring': { pri: 2, why: 'The smallest investment with the biggest payoff for search quality.' }
+          }
+        },
+        {
+          key: 'nesting',
+          label: 'Nesting Boolean Operators (parentheses control order of evaluation)',
+          keywords: ['nesting', 'nested', 'parentheses', 'order of evaluation', 'grouping terms', 'complex query'],
+          goals: {
+            'find-papers': { pri: 2, why: 'Parentheses control which terms Dimensions evaluates first — matters the moment your query has more than two concepts.' }
+          }
+        },
+        {
+          key: 'syntax',
+          label: 'Search Syntax (quotes for exact phrase, ? and * wildcards)',
+          keywords: ['syntax', 'quotation marks', 'quotes', 'exact phrase', 'wildcard', 'wildcards', 'asterisk', 'question mark', 'capitalisation', 'capitalization'],
+          goals: {
+            'find-papers': { pri: 2, why: 'Quotes, wildcards, and capitalisation rules — small things that change everything.' },
+            'reading-list': { pri: 3, why: 'A few syntax tricks tighten the seed search before you ever click similar.' }
+          }
+        },
+        {
+          key: 'filters',
+          label: 'Filters (Publication Year, Location, Groups you can name and reuse)',
+          keywords: ['filter', 'publication year', 'named group', 'groups', 'reusable filter', 'location filter', 'country filter', 'my groups'],
+          goals: {
+            'benchmark': { pri: 1, why: 'Filters slice peer sets by year, category, and source — essential for fair benchmarking.' },
+            'show-impact': { pri: 3, why: 'Open Access, year, and category filters keep the picture honest.' }
+          }
+        },
+        {
+          key: 'similar-pubs',
+          label: 'Similar Documents Search (paste text; top 500 / 1000 / 2000 results)',
+          keywords: ['similar documents', 'similar publications', 'similar papers', 'paste text', 'paste abstract', 'more like this', 'similar to this', 'related paper', 'related work'],
+          goals: {
+            'reading-list': { pri: 1, why: 'The mechanics behind "more like this" and what the similarity is actually based on.' },
+            'exploring': { pri: 3, why: 'The "show me more like this" feature most people don\'t know exists.' }
+          }
+        },
+        {
+          key: 'researcher-profiles',
+          label: 'Finding a Researcher + Researcher Profile deep-dive (ORCID, outputs, network, funding)',
+          keywords: ['researcher profile', 'author profile', 'specific researcher', 'find researcher', 'orcid', 'researcher page', 'author page', 'career output', 'find author'],
+          goals: {
+            'track-funding': { pri: 2, why: 'For tracking which labs and companies are receiving the funding you care about.' },
+            'benchmark': { pri: 1, why: 'Pull a researcher or organisation page and compare outputs side by side.' },
+            'show-impact': { pri: 1, why: 'Anchor the impact story in named people, labs, and organisations.' }
+          }
+        },
+        {
+          key: 'org-profiles',
+          label: 'Finding a Research Organization (org hierarchies, parent/child, predefined Organization Groups)',
+          keywords: ['organization', 'organisation', 'institution page', 'research organization', 'org profile', 'parent organization', 'hierarchy', 'sub-institution', 'university profile', 'affiliated', 'org group'],
+          goals: {
+            'benchmark': { pri: 2, why: 'Full institutional profile including parent/child hierarchy — essential when you need to include all affiliated units, not just the parent.' },
+            'show-impact': { pri: 2, why: 'The org page rolls up outputs, funding, and active researchers into one view — good for institution-level impact narratives.' }
+          }
+        },
+        {
+          key: 'funder-outputs',
+          label: 'Finding a Funder + tracking Funder Outputs (predefined Funder Groups for complex agencies)',
+          keywords: ['funder', 'funding body', 'find funder', 'grant giver', 'funder outputs', 'funder group', 'agency', 'foundation', 'sponsor', 'funder profile'],
+          goals: {
+            'track-funding': { pri: 1, why: 'The fastest way to see everything a specific funder has supported, then narrow by year or category. Funder Groups solve the complex-agency problem.' }
+          }
+        },
+        {
+          key: 'ai-discovery',
+          label: 'AI Discovery › Natural Language Query (plain English → structured search)',
+          keywords: ['AI discovery', 'natural language', 'plain english', 'NLQ', 'ask a question', 'conversational search', 'ai search', 'natural language query'],
+          goals: {
+            'track-funding': { pri: 3, why: 'Type the question in plain English when you don\'t want to build the query yourself.' },
+            'show-impact': { pri: 2, why: 'Skip query syntax when you need an answer in five minutes for a slide.' },
+            'exploring': { pri: 1, why: 'The lowest-friction way to ask Dimensions a question.' }
+          }
+        },
+        {
+          key: 'topic-refine',
+          label: 'AI Discovery › Topic Refine (auto-clusters large result sets into labelled themes)',
+          keywords: ['topic refine', 'cluster', 'clustering', 'themes', 'sub-topics', 'group results', 'thematic', 'labelled themes'],
+          goals: {
+            'reading-list': { pri: 1, why: 'Clusters a sprawling result set into labelled sub-topics so the list shapes itself.' }
+          }
+        },
+        {
+          key: 'categories',
+          label: 'Research Categories (article-level classification: FoR, SDG, HRCS, and more)',
+          keywords: ['category', 'categories', 'research category', 'subject area', 'field of research', 'FoR', 'SDG', 'sustainable development', 'HRCS', 'classification', 'discipline'],
+          goals: {
+            'benchmark': { pri: 2, why: 'Article-level classification is what makes cross-institution comparison defensible.' }
+          }
+        }
+      ]
+    },
+    'DM-103': {
+      id: 'DM-103',
+      shortName: 'Dimensions 103',
+      seriesTag: 'Advanced Search',
+      title: 'Advanced Search',
+      time: 50,
+      level: 'Intermediate',
+      desc: 'Three precision tools for when basic search isn\'t enough: Search Fields (30+ targeted metadata fields including FCR, ORCID, Date Inserted), AI Concepts (the AI reads your results and surfaces vocabulary you didn\'t know to search for), and ID Search (paste up to 25,000 identifiers of mixed types).',
+      topics: [
+        {
+          key: 'why-advanced',
+          label: 'Basic Search vs Advanced Search (why more keywords don\'t solve precision problems)',
+          keywords: ['advanced search', 'precision problem', 'too many results', 'basic vs advanced'],
+          goals: {}
+        },
+        {
+          key: 'accessing',
+          label: 'Accessing Advanced Search (the query builder + Search Reminders)',
+          keywords: ['open advanced search', 'query builder', 'access advanced'],
+          goals: {}
+        },
+        {
+          key: 'choosing-tool',
+          label: 'Search Fields, Concepts, ID Search — which tool fits which task',
+          keywords: ['which tool', 'choose tool', 'decision framework', 'search field vs concept vs id', 'when to use'],
+          goals: {
+            'find-papers': { pri: 3, why: 'A clear decision framework: Search Fields, Concepts, or ID Search — which one for which moment.' },
+            'exploring': { pri: 1, why: 'The clearest "when to use what" framework for the three advanced tools.' }
+          }
+        },
+        {
+          key: 'search-fields',
+          label: 'Search Fields › Keyword vs Targeted (30+ metadata fields, Boolean-combinable)',
+          keywords: ['search field', 'search fields', 'targeted search', 'field-based search', 'metadata search', 'specific field', 'DOI field', 'ORCID field', 'ISSN field', 'abstract field', 'acknowledgements field', 'search by author', 'search by journal'],
+          goals: {
+            'find-papers': { pri: 1, why: 'Target the exact field that matters — abstract, DOI, source title — instead of searching everywhere at once.' },
+            'track-funding': { pri: 1, why: 'Target Funder ID, Researcher name, and index date directly.' },
+            'benchmark': { pri: 1, why: 'FCR and RCR fields let you benchmark citation impact in a normalised, field-fair way.' },
+            'show-impact': { pri: 1, why: 'Pull citation metrics (FCR, RCR), Altmetric signals, and policy linkage by field — the numbers that go in the deck.' }
+          }
+        },
+        {
+          key: 'search-fields-fcr',
+          label: 'Search Fields › FCR (finding rising-star researchers with field-normalised impact)',
+          keywords: ['field citation ratio', 'FCR', 'rising researcher', 'emerging researcher', 'citation impact', 'field-normalised', 'above average citation', 'quality vs volume'],
+          goals: {
+            'benchmark': { pri: 2, why: 'FCR is field-normalised, so citation counts become comparable across disciplines — not just an unfair race for the highest raw number.' },
+            'show-impact': { pri: 1, why: 'FCR turns "we got a lot of citations" into "we\'re outperforming our field by 50%" — the number that actually resonates in a leadership deck.' }
+          }
+        },
+        {
+          key: 'search-fields-date-inserted',
+          label: 'Search Fields › Date Inserted (only records added since your last search)',
+          keywords: ['date inserted', 'new records', 'recently added', 'since last search', 'monthly report', 'quarterly report', 'recurring search', 'index date', 'only new'],
+          goals: {
+            'track-funding': { pri: 2, why: 'Filter to only records added since your last check — turn a monthly funding review from hours into minutes.' },
+            'benchmark': { pri: 3, why: 'For recurring benchmarking reports, filter to only what\'s been added since the last snapshot.' }
+          }
+        },
+        {
+          key: 'tab-matters',
+          label: 'Content-type tabs control which fields you can search (Publications vs Grants vs Patents)',
+          keywords: ['content type tab', 'tab matters', 'publications tab', 'grants tab', 'patents tab', 'field availability'],
+          goals: {
+            'exploring': { pri: 3, why: 'A small but critical rule: the tab you pick controls the fields you can search.' }
+          }
+        },
+        {
+          key: 'ai-concepts',
+          label: 'AI Concepts › the "keyword block" problem (finding vocabulary you didn\'t know to search)',
+          keywords: ['concept search', 'concept searching', 'AI concepts', 'related terminology', 'synonyms', 'similar terms', 'related terms', 'related words', 'keyword block', 'terms I didn\'t think of', 'vocabulary I don\'t know', 'expanded terms', 'discover terms', 'surface terms', 'adjacent terminology', 'related concepts', 'related methods', 'similar terminology', 'find related terms', 'AI-suggested terms'],
+          goals: {
+            'reading-list': { pri: 1, why: 'The killer feature for reading lists: AI reads your initial hits and surfaces terms you\'d never have guessed.' },
+            'find-papers': { pri: 1, why: 'When you can\'t guess all the right keywords, let the AI surface them from your initial results.' },
+            'track-funding': { pri: 3, why: 'Refine a noisy funding-topic search by seeing what your initial hits actually have in common.' },
+            'benchmark': { pri: 3, why: 'Surface the research themes your peer institutions own that yours doesn\'t — quickly.' },
+            'exploring': { pri: 2, why: 'A genuinely AI-powered feature — show how the platform thinks about your results.' }
+          }
+        },
+        {
+          key: 'ai-concepts-calculate',
+          label: 'AI Concepts › Calculate Concepts (co-occurring terms, add with Boolean/wildcards/proximity)',
+          keywords: ['calculate concepts', 'co-occurring terms', 'concept list', 'ranked concepts', 'expand query with concepts', 'add concepts to search', 'proximity search'],
+          goals: {
+            'reading-list': { pri: 2, why: 'The mechanics — click Calculate Concepts, pick the terms that fit, add them with AND / OR / NOT to expand your original query.' },
+            'find-papers': { pri: 2, why: 'The actual workflow: run initial search, hit Calculate Concepts, add the terms that fit, re-run.' }
+          }
+        },
+        {
+          key: 'id-search',
+          label: 'ID Search › Applications by role (librarian, pharma analyst, funder, journal editor)',
+          keywords: ['ID search', 'bulk lookup', 'list of DOIs', 'list of identifiers', 'paste list', 'bulk search', 'known items', 'bibliography', 'reference list', 'DOI list', 'PMID list'],
+          goals: {
+            'track-funding': { pri: 2, why: 'Paste a list of grant numbers or project IDs and pull the linked publications in one move.' },
+            'benchmark': { pri: 2, why: 'Paste your institution\'s GRID/ROR IDs (or your peers\') to define peer sets explicitly.' },
+            'show-impact': { pri: 2, why: 'Drop in your institution\'s DOI list, see which were cited in policy or patents.' },
+            'reading-list': { pri: 2, why: 'Paste a colleague\'s reference list and rebuild it inside Dimensions in one move.' }
+          }
+        },
+        {
+          key: 'id-search-types',
+          label: 'ID Search › Accepted ID types by content type (DOI, PMID, arXiv, NCT, patent, grant)',
+          keywords: ['DOI', 'PMID', 'PubMed', 'arXiv', 'NCT', 'clinical trial ID', 'patent number', 'grant number', 'ISBN', 'PMC', 'orange book', 'family number', 'identifier types'],
+          goals: {}
+        },
+        {
+          key: 'id-search-steps',
+          label: 'ID Search › Running the search (paste one ID per line, up to 25,000, mixed types allowed)',
+          keywords: ['run ID search', 'how to ID search', '25000 IDs', 'mixed IDs', 'one per line', 'paste identifiers'],
+          goals: {}
+        },
+        {
+          key: 'id-search-favorite',
+          label: 'ID Search › Save as Favorite + analytical side panel (turn a static list into a live dataset)',
+          keywords: ['save ID search', 'ID search URL', 'analytical panel', 'recurring report', 'favorite ID search', 'reusable list', 'annual report'],
+          goals: {
+            'track-funding': { pri: 3, why: 'Save an ID Search as a Favorite and the URL stays valid for a year — perfect for a recurring monthly or quarterly funding-report workflow.' }
+          }
+        }
+      ]
+    },
+    'DM-104': {
+      id: 'DM-104',
+      seriesTag: 'Precision Technique',
+      title: 'Proximity Search in Dimensions',
+      time: 15,
+      level: 'Intermediate',
+      desc: 'A short focused course on Dimensions\' proximity operator — the syntax \"phrase\"~N that finds results where terms appear near each other without requiring an exact phrase. For when authors phrase the same idea in different orders or with words between them.',
+      topics: [
+        {
+          key: 'what-is-proximity',
+          label: 'What is Proximity Search? (why exact phrases are sometimes too strict)',
+          keywords: ['near each other', 'appear near', 'appear close', 'close together', 'proximity search', 'proximity', 'terms near each other', 'words near each other', 'words nearby', 'terms nearby', 'not exact phrase', 'flexible phrase', 'phrase with variation', 'author phrasing differs', 'terms in different order', 'terms rearranged', 'phrases vary'],
+          goals: {
+            'find-papers': { pri: 3, why: 'When authors phrase the same idea in different orders or with words between them, exact phrase misses hits — proximity finds them anyway.' },
+            'reading-list': { pri: 3, why: 'For building comprehensive reading lists on a topic where terminology varies across authors.' }
+          }
+        },
+        {
+          key: 'proximity-syntax',
+          label: 'The syntax: quoted phrase + tilde + distance number ("machine learning health outcomes"~3)',
+          keywords: ['proximity syntax', 'tilde', 'tilde operator', 'tilde syntax', 'distance number', 'phrase tilde', 'quoted phrase tilde', 'proximity distance', 'phrase~3', 'phrase~5', 'how to write proximity', 'proximity syntax dimensions'],
+          goals: {
+            'find-papers': { pri: 3, why: 'The actual syntax — the number after the tilde controls how much flexibility you allow between terms.' }
+          }
+        },
+        {
+          key: 'proximity-distance',
+          label: 'How distance is calculated (word moves; reversed order costs more)',
+          keywords: ['distance value', 'distance calculation', 'word moves', 'reversed order', 'how proximity works', 'proximity math', 'word gap', 'word moves proximity', 'reversed terms'],
+          goals: {}
+        },
+        {
+          key: 'proximity-plurals',
+          label: 'Automatic plural matching (regular yes, irregular no)',
+          keywords: ['plural', 'plurals', 'plural matching', 'irregular plural', 'outcome outcomes', 'mouse mice', 'plural search'],
+          goals: {}
+        }
+      ]
+    },
+    'DM-105': {
+      id: 'DM-105',
+      seriesTag: 'Workflow — Reviewer & Expert Sourcing',
+      title: 'Find a Reviewer in Dimensions',
+      time: 45,
+      level: 'Intermediate',
+      desc: 'The Dimensions Reviewer Finder / Expert Finder workflow — an AI-driven tool that matches document text to researcher expertise. Covers workspace setup, single-document reviewer identification, conflict-of-interest handling, group matrix and clustering for large batches, Committee Builder for tracking outreach, and the "fake application" trick for sourcing KOLs, hires, panelists, and collaborators.',
+      segmentBoost: ['Nonprofit/Government', 'Publishers'],
+      topics: [
+        {
+          key: 'what-is-reviewer-finder',
+          label: 'What is Reviewer Finder / Expert Finder? (AI matches document text to researchers, no keyword search)',
+          keywords: ['reviewer finder', 'expert finder', 'find reviewer', 'find reviewers', 'find peer reviewer', 'find experts', 'peer review', 'grant reviewer', 'grant panel', 'reviewer identification', 'panelist', 'peer reviewer', 'match reviewer', 'AI reviewer', 'reviewer matching', 'reviewer sourcing', 'reviewer selection'],
+          goals: {
+            'exploring':   { pri: 3, why: 'The complete reviewer-sourcing workflow, from adding a manuscript or grant application to producing a conflict-free shortlist.' },
+            'find-papers': { pri: 3, why: 'Related tool: the same AI matching can be pointed at any block of text to surface the researchers working on it.' }
+          }
+        },
+        {
+          key: 'access-reviewer-finder',
+          label: 'Accessing Reviewer Finder (Apps menu; add-on subscription)',
+          keywords: ['apps menu', 'launch reviewer finder', 'access reviewer finder', 'open reviewer finder', 'add-on', 'reviewer finder subscription', 'expert finder subscription'],
+          goals: {}
+        },
+        {
+          key: 'workspaces',
+          label: 'Create workspaces (project folders for grouping related documents)',
+          keywords: ['workspace', 'workspaces', 'project folder', 'application manager', 'manuscript manager', 'abstract manager', 'organize applications', 'group manuscripts'],
+          goals: {}
+        },
+        {
+          key: 'add-document',
+          label: 'Add a document (Title + Abstract required; applicants for conflict checks)',
+          keywords: ['add manuscript', 'add abstract', 'add application', 'upload document reviewer', 'submit for review', 'add applicant', 'grant applicant', 'manuscript author'],
+          goals: {}
+        },
+        {
+          key: 'reviewer-id-single',
+          label: 'Reviewer Identification for a single document (AI scoring, evidence, career-stage proxy)',
+          keywords: ['reviewer identification', 'match reviewers', 'reviewer scores', 'reviewer relevance', 'why this reviewer', 'evidence for reviewer', 'career stage', 'shortlist reviewers'],
+          goals: {
+            'exploring': { pri: 2, why: 'The core action — feed the AI a document and get a ranked shortlist of matched researchers with evidence for each match.' }
+          }
+        },
+        {
+          key: 'tune-concepts',
+          label: 'Tuning the search concepts (Include / Required / Ignore, adding custom concepts)',
+          keywords: ['tune concepts reviewer', 'edit concepts reviewer', 'required concept', 'ignore concept', 'add custom concept', 'concept toggle', 'refine reviewer search'],
+          goals: {}
+        },
+        {
+          key: 'reviewer-conflicts',
+          label: 'Automatic conflict-of-interest detection (co-authorship, shared affiliation, evidence)',
+          keywords: ['conflict of interest', 'COI', 'coi check', 'co-authorship conflict', 'shared institution', 'independent reviewer', 'reviewer bias', 'conflict-free reviewer', 'reviewer vetting'],
+          goals: {
+            'exploring': { pri: 3, why: 'The automatic flag-then-verify workflow — the system surfaces potential conflicts, you decide whether they matter.' }
+          }
+        },
+        {
+          key: 'reviewer-matrix',
+          label: 'Reviewer identification across many documents (coverage matrix, real-time gap tracking)',
+          keywords: ['coverage matrix', 'multiple applications', 'batch reviewer', 'review panel', 'group review', 'panel coverage', 'batch reviewer identification'],
+          goals: {}
+        },
+        {
+          key: 'clustering',
+          label: 'Auto-clustering for large workspaces (hundreds of applications → thematic groups)',
+          keywords: ['cluster applications', 'group similar applications', 'thematic clustering', 'large batch review', 'organize hundreds of applications', 'auto-clustering reviewer'],
+          goals: {}
+        },
+        {
+          key: 'committee-builder',
+          label: 'Committee Builder (organise chosen candidates, track invitations, log conflicts)',
+          keywords: ['committee builder', 'reviewer committee', 'panel management', 'track invitations', 'reviewer roster', 'assemble panel', 'committee management'],
+          goals: {
+            'exploring': { pri: 3, why: 'The second half of the workflow — finding reviewers is one job; tracking who accepted, who declined, and where the gaps are is the other.' }
+          }
+        },
+        {
+          key: 'committee-status',
+          label: 'Committee Builder › track status per reviewer (Accepted / Declined / Sent, contacts, notes)',
+          keywords: ['reviewer status', 'invitation tracking', 'reviewer contact', 'reviewer notes', 'outreach tracking', 'invitation status'],
+          goals: {}
+        },
+        {
+          key: 'committee-export',
+          label: 'Export committee as CSV (contact info, status, assignments, all in one file)',
+          keywords: ['export reviewer list', 'export committee', 'CSV reviewer', 'download reviewer roster', 'reviewer spreadsheet'],
+          goals: {}
+        },
+        {
+          key: 'kol-hires',
+          label: 'Beyond peer review: KOLs, potential hires, conference speakers, panelists, collaborators',
+          keywords: ['key opinion leader', 'KOL', 'find speakers', 'conference speakers', 'find hires', 'potential hires', 'find collaborators', 'find panelists', 'thought leader', 'subject matter expert', 'SME sourcing', 'sourcing experts'],
+          goals: {
+            'exploring':    { pri: 3, why: 'The same matching engine works for KOLs, hires, panelists, and collaborators — not just peer reviewers.' },
+            'benchmark':    { pri: 3, why: 'Identifying who the leading researchers are in a niche is competitive intelligence, not just review-panel sourcing.' }
+          }
+        },
+        {
+          key: 'fake-application',
+          label: 'The "fake application" trick (dummy record with keywords → ranked expert list without real docs)',
+          keywords: ['fake application', 'dummy application', 'expert search trick', 'expert list without document', 'shortcut expert', 'quick expert list'],
+          goals: {}
+        }
+      ]
+    },
+    'DM-106': {
+      id: 'DM-106',
+      seriesTag: 'Developer / Analytics',
+      title: 'Accelerating Analytics: Your Guide to the Dimensions API',
+      time: 60,
+      level: 'Expert',
+      desc: 'Programmatic access to Dimensions through the Analytics API and Dimensions Search Language (DSL). Covers authentication, DSL grammar and the data model, choosing an access environment (Sheets, Excel, Python via dimcli), the API Lab cookbook library, and the technical limits and rules to design around. For people ready to move from clicking to scripting.',
+      topics: [
+        {
+          key: 'api-why',
+          label: 'Why the API? (what the WebApp cannot support — joins with institutional data, BI pipelines, automation)',
+          keywords: ['API', 'programmatic', 'programmatically', 'programming', 'why API', 'API vs webapp', 'API capabilities', 'automation', 'pipeline', 'programmatic access', 'developer access', 'custom reporting', 'joined data', 'department analysis'],
+          goals: {
+            'benchmark':    { pri: 3, why: 'The WebApp can\'t join Dimensions data with your own institutional records — the API can. Essential for department-level or custom-cohort benchmarking.' },
+            'show-impact':  { pri: 3, why: 'For automating recurring impact reports rather than rebuilding them by hand each quarter.' }
+          }
+        },
+        {
+          key: 'api-console',
+          label: 'API Console (test DSL queries in the browser, no key required)',
+          keywords: ['API', 'API console', 'DSL console', 'test queries', 'try DSL', 'analytics API console', 'browser DSL', 'in-app console'],
+          goals: {}
+        },
+        {
+          key: 'api-key-gen',
+          label: 'Generating and safeguarding your API key (treat it like a password)',
+          keywords: ['API', 'API key', 'generate API key', 'create API key', 'API authentication', 'API credentials', 'key security'],
+          goals: {}
+        },
+        {
+          key: 'api-endpoint-limits',
+          label: 'Endpoint structure + hard limits (30 queries/min, 50k pagination cap, 1000 per page, 400 per IN clause)',
+          keywords: ['API', 'endpoint', 'API endpoint', 'API URL', 'rate limit', 'pagination', 'query limit', 'API quota', '50000 records', '1000 records', 'IN clause limit'],
+          goals: {}
+        },
+        {
+          key: 'dsl-intro',
+          label: 'What is DSL (Dimensions Search Language)? — SQL-inspired, mapped to the data model',
+          keywords: ['DSL', 'API', 'DSL', 'Dimensions Search Language', 'query language', 'what is DSL', 'SQL-like Dimensions', 'domain-specific query'],
+          goals: {
+            'exploring': { pri: 3, why: 'DSL is the query language behind the API — worth understanding what it is even if you\'re not yet writing scripts.' }
+          }
+        },
+        {
+          key: 'dsl-data-model',
+          label: 'The data model — sources (publications, grants, patents, trials, policy, datasets) and cross-links',
+          keywords: ['DSL', 'API', 'data model', 'data sources API', 'cross-linked sources', 'publications API', 'grants API', 'patents API', 'clinical trials API', 'policy documents API', 'API data model', 'linked research API', 'source titles', 'entities disambiguation'],
+          goals: {}
+        },
+        {
+          key: 'dsl-grammar',
+          label: 'DSL grammar: search / for / where / return (the four building blocks)',
+          keywords: ['DSL', 'DSL grammar', 'DSL syntax', 'search publications', 'for keyword', 'where filter', 'return fields', 'DSL clauses', 'writing DSL', 'DSL example', 'DSL query structure'],
+          goals: {
+            'find-papers': { pri: 3, why: 'Once you know the four DSL clauses (search / for / where / return), any web-app search becomes a scriptable, repeatable query.' }
+          }
+        },
+        {
+          key: 'dsl-webapp-mapping',
+          label: 'The same search in two languages — every web-app action has a DSL equivalent',
+          keywords: ['DSL', 'DSL webapp mapping', 'DSL equivalent', 'web app to DSL', 'translate search', 'search in code', 'convert search to code'],
+          goals: {}
+        },
+        {
+          key: 'api-environments',
+          label: 'How you\'ll access the API: raw REST, Google Sheets connector, Excel add-in, or Python via dimcli',
+          keywords: ['API', 'Python', 'Colab', 'notebook', 'dimcli', 'dimcli library', 'Google Sheets Dimensions', 'Sheets connector', 'Excel Dimensions', 'Excel add-in', 'Python API', 'Colab Dimensions', 'Jupyter notebook API', 'REST API', 'HTTP request Dimensions', 'access environment', 'connect to Dimensions'],
+          goals: {
+            'exploring': { pri: 3, why: 'Multiple ways to connect — spreadsheet formulas for quick jobs, Python for automation. Match the environment to the technical comfort level.' }
+          }
+        },
+        {
+          key: 'cookbooks',
+          label: 'API Lab cookbooks (ready-to-use Jupyter notebooks for common analyses)',
+          keywords: ['notebook', 'notebooks', 'analysis', 'API lab', 'cookbook', 'cookbooks', 'Jupyter notebook Dimensions', 'ready-made analysis', 'h-index', 'citation analysis notebook', 'grants enrichment', 'industry collaboration notebook', 'patent citation notebook', 'policy impact notebook', 'starter notebook'],
+          goals: {
+            'benchmark':   { pri: 3, why: 'Multiple cookbooks specifically for institution benchmarking (top journals, citation flow, industry collaborators, patent impact, policy impact).' },
+            'show-impact': { pri: 3, why: 'Pre-built notebooks for patent citations, policy references, and industry collaborations — the impact stories that need automation.' }
+          }
+        },
+        {
+          key: 'api-rules',
+          label: 'Playing by the rules — rate limits, pagination chunking, IN-clause array chunking',
+          keywords: ['API', 'rate limit design', 'time.sleep', 'chunk requests', 'pagination loop', 'API design patterns', 'API best practices', 'silent truncation'],
+          goals: {}
+        },
+        {
+          key: 'api-scope',
+          label: 'What the API isn\'t for (transformations, full-text retrieval, real-time serving)',
+          keywords: ['API', 'API limitations', 'what API not for', 'API scope', 'not real-time', 'no full text', 'not for transformations'],
+          goals: {}
+        },
+        {
+          key: 'bigquery',
+          label: 'Dimensions on Google BigQuery (alternative for very large-scale analysis)',
+          keywords: ['BigQuery', 'big query', 'BigQuery', 'Google BigQuery', 'Dimensions BigQuery', 'huge datasets', 'BI tools Dimensions', 'billions of records'],
+          goals: {}
+        }
+      ]
+    },
+    'DM-107': {
+      id: 'DM-107',
+      seriesTag: 'Research Lifecycle',
+      title: 'From Funding to Policy: Reading a Fully Linked Dimensions Record',
+      time: 15,
+      level: 'Beginner',
+      desc: 'Walk through a fully linked Dimensions record end to end — funding sources, associated datasets, citations across patents, clinical trials, and government policy. Learn to read the invisible connections behind every research paper, and interpret Field Citation Ratio, Altmetric attention, and impact indicators along the way.',
+      topics: [
+        {
+          key: 'linked-record-intro',
+          label: 'What a fully linked record shows (funding + data + citations + patents + trials + policy — all connected)',
+          keywords: ['linked record', 'connected record', 'fully linked', 'publication record', 'reading a record', 'record structure', 'what a record shows', 'reading dimensions', 'read a paper record'],
+          goals: {
+            'exploring':   { pri: 1, why: 'The complete tour of what one Dimensions record actually contains — the connections most databases hide.' },
+            'show-impact': { pri: 3, why: 'The record itself IS the impact story once you know how to read it — no separate report needed.' }
+          }
+        },
+        {
+          key: 'research-lifecycle',
+          label: 'The three phases: Origin, Work, and Impact — how a record reveals each',
+          keywords: ['research lifecycle', 'lifecycle', 'origin work impact', 'research journey', 'phases of research', 'end to end research', 'complete story research'],
+          goals: {
+            'exploring':   { pri: 2, why: 'The mental model that ties everything together — every record has an origin (funding), a middle (the work), and an afterlife (impact).' },
+            'show-impact': { pri: 3, why: 'Impact conversations land better when framed as a lifecycle, not a citation count.' }
+          }
+        },
+        {
+          key: 'origin-funding-extraction',
+          label: 'Origin › How funder names get extracted from acknowledgement text',
+          keywords: ['funding statement', 'acknowledgement', 'acknowledgements', 'extracted funders', 'funder from paper', 'who funded this paper', 'funder extraction'],
+          goals: {
+            'track-funding': { pri: 2, why: 'Dimensions parses the paper\'s acknowledgement text and pulls out a structured list of funders — a shortcut around hand-searching acknowledgements.' }
+          }
+        },
+        {
+          key: 'origin-supporting-grants',
+          label: 'Origin › Supporting Grants (grant IDs, budget, timeline, PI, other publications on the same award)',
+          keywords: ['supporting grants', 'linked grants', 'grants that funded', 'grant record', 'grant profile', 'grant ID', 'award amount', 'budget timeline PI', 'grants behind paper', 'principal investigator', 'other publications from grant'],
+          goals: {
+            'track-funding': { pri: 1, why: 'Every grant a paper traces back to opens into a full profile — budget, timeline, PI, other publications from the same award. The traceable-funding shortcut.' },
+            'show-impact':   { pri: 2, why: 'For funders and grant-tracking work: forward-trace from a grant ID to the papers, patents, and policy citations it eventually produced.' }
+          }
+        },
+        {
+          key: 'evidence-datasets',
+          label: 'Evidence › Associated datasets (raw data behind the paper\'s conclusions, linked from Figshare / DataCite)',
+          keywords: ['associated datasets', 'underlying data', 'raw data', 'Figshare', 'DataCite', 'data behind paper', 'datasets supporting paper', 'source data', 'evidence dataset'],
+          goals: {
+            'find-papers':  { pri: 3, why: 'For methodology work: trace from a paper\'s conclusions back to the raw dataset without leaving the platform.' },
+            'reading-list': { pri: 3, why: 'When the data itself is the point, not just the paper — the associated datasets link is the fastest route.' }
+          }
+        },
+        {
+          key: 'reach-citation-metrics',
+          label: 'Reach › Total + recent citations (legacy vs current momentum)',
+          keywords: ['total citations', 'recent citations', 'citation legacy', 'citation momentum', 'still cited', 'active citations', 'legacy vs current'],
+          goals: {
+            'benchmark':   { pri: 2, why: 'Total citations show legacy; recent citations reveal whether interest is alive or has moved on. Both matter, and mean different things.' },
+            'show-impact': { pri: 2, why: 'A high total with weak recent citations tells a very different story than sustained yearly citation activity.' }
+          }
+        },
+        {
+          key: 'reach-fcr',
+          label: 'Reach › Field Citation Ratio (field-normalised so citations compare fairly across disciplines)',
+          keywords: ['FCR', 'Field Citation Ratio', 'field normalized', 'field-normalised', 'field-adjusted', 'cross-discipline citation', 'compare citations across fields', 'field-fair citations', 'RCR', 'Relative Citation Ratio'],
+          goals: {
+            'benchmark':   { pri: 1, why: '200 citations means one thing in maths, something completely different in infectious disease. FCR corrects for it — 1.0 is field average, higher is outperforming peers.' },
+            'show-impact': { pri: 1, why: '"We got 200 citations" is a number. "Our work is cited 8× more than typical for this field" is a story leadership can act on.' }
+          }
+        },
+        {
+          key: 'reach-altmetric',
+          label: 'Reach › Altmetric Attention Score (news, blogs, policy, social — a signal citations can\'t catch quickly enough)',
+          keywords: ['Altmetric', 'attention score', 'altmetric score', 'online attention', 'social media mentions', 'news mentions', 'policy mentions', 'attention page', 'altmetric badge', 'twitter mentions research', 'reddit mentions research'],
+          goals: {
+            'show-impact': { pri: 1, why: 'Citations take years to accumulate. Altmetric picks up news, blogs, policy documents, and social media the day they happen — the early-signal counterpart to citations.' },
+            'benchmark':   { pri: 3, why: 'Attention isn\'t quality, but a paper in the top 5% of ever-tracked Altmetric scores has a real-world footprint worth investigating.' }
+          }
+        },
+        {
+          key: 'impact-clinical-trials',
+          label: 'Impact › Clinical trial citations (rare, meaningful — research crossing into human testing)',
+          keywords: ['clinical trial citations', 'clinical trial cited', 'research in trials', 'trial citing paper', 'research into human testing', 'academic to clinical', 'evidence base for trial'],
+          goals: {
+            'show-impact': { pri: 2, why: 'A clinical trial citing a paper is a rare, meaningful signal — someone judged the research robust enough to build a human study on. Most papers never earn this.' }
+          }
+        },
+        {
+          key: 'impact-patents',
+          label: 'Impact › Patent citations (bridge from academic research to commercial IP — often the early warning that a field is commercialising)',
+          keywords: ['patent citations', 'patents citing', 'commercial patents', 'IP from research', 'academic to commercial', 'patent as prior art', 'early warning signal', 'IP filings citing research', 'commercialisation signal'],
+          goals: {
+            'show-impact': { pri: 1, why: 'Patents citing a paper is proof the underlying science reached commercial hands. Often shows up years before a product launches — the early-warning signal.' },
+            'benchmark':   { pri: 2, why: 'When patents in a field start citing the same academic papers, that field is moving from lab to market. Useful competitive intelligence.' }
+          }
+        },
+        {
+          key: 'impact-policy',
+          label: 'Impact › Policy citations (research shaping WHO guidelines, government policy, NGO reports)',
+          keywords: ['policy citations', 'WHO guideline', 'policy documents', 'research shapes policy', 'policy influence', 'government policy', 'NGO reports', 'societal impact', 'REF impact case study', 'policy referenced research'],
+          goals: {
+            'show-impact': { pri: 1, why: 'A paper cited in a WHO guideline has shaped what health systems actually do — a different order of impact than academic citations. Essential evidence for REF submissions and impact cases.' }
+          }
+        }
+      ]
+    }
+  };
+
+  // If the user has a comfort level above Beginner, we lightly re-rank
+  // topics. We never remove DM-101 (foundational), but we adjust the
+  // framing on the result screen with a small note.
+  const LEVEL_NOTES = {
+    'Novice':       'You\'re brand new, so we\'ve front-loaded the foundational topics.',
+    'Beginner':     'You\'ve already explored a bit, so the highlighted topics target the spots most beginners get stuck.',
+    'Intermediate': 'You know your way around. Skim the foundational topics and focus on the highlighted ones for sharpening your workflow.',
+    'Expert':       'You\'re an expert, so treat DM-101 as a refresher and pay closest attention to the highlighted topics.'
+  };
+
+  const BEYOND_AI_LINES = {
+    'find-papers':  'Ask "Find recent papers on protein folding methods" and let Dimensions build the search.',
+    'track-funding':'Ask "Who funded the most R&D in CRISPR therapeutics last year?" and let Dimensions build the search.',
+    'benchmark':    'Ask "Which UK universities published most on machine learning in 2024?" and let Dimensions build the search.',
+    'show-impact':  'Ask "Which papers from our institution were cited in WHO policy documents?" and let Dimensions build the search.',
+    'reading-list': 'Paste an abstract or summary into AI Discovery and get a ranked list of conceptually similar work.',
+    'exploring':    'Try AI Discovery as your first stop — it\'s the gentlest introduction to what Dimensions can answer.'
+  };
+
+  // ───────────────────────────────────────────────────────────────────
+  // STARTER PROMPT TEMPLATES (fill the textarea when clicked)
+  // ───────────────────────────────────────────────────────────────────
+  const PROMPT_TEMPLATES = {
+    'find-papers':   'I need to find papers on a specific topic quickly, narrow the results to what\'s actually relevant, and avoid wading through thousands of off-target hits.',
+    'track-funding': 'I want to track funding in my field — who\'s funding what, where the money is going, and how that\'s shifting over time.',
+    'benchmark':     'I need to benchmark my institution against peers — outputs, funding received, citation performance, and where we\'re strong or weak.',
+    'show-impact':   'I need to show research impact to leadership — citations, Altmetric attention, and policy uptake — in a way that lands with non-researchers.',
+    'reading-list':  'I want to build a reading list quickly from a seed paper or topic, with related work I might have missed.',
+    'exploring':     'I\'m not sure yet what I\'ll use Dimensions for. I want a tour of what it can actually do so I can figure out where it fits in my work.'
+  };
+
+  // ───────────────────────────────────────────────────────────────────
+  // SEGMENT DISPLAY
+  // ───────────────────────────────────────────────────────────────────
+  const SEGMENT_DISPLAY = {
+    'Academic':              { name: 'Academic',              tone: 'blue',   icon: '⌬' },
+    'Industry':              { name: 'Industry research',     tone: 'orange', icon: '▣' },
+    'Nonprofit/Government':  { name: 'Government or nonprofit', tone: 'pink', icon: '⌂' },
+    'Publishers':            { name: 'Publisher',             tone: 'green',  icon: '❐' },
+    'Other':                 { name: 'Mixed / other',         tone: 'muted',  icon: '⋯' }
+  };
+
+  // ───────────────────────────────────────────────────────────────────
+  // DOM
+  // ───────────────────────────────────────────────────────────────────
+  const $  = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+  // ───────────────────────────────────────────────────────────────────
+  // RENDER: progress hex strip + step indicator
+  // ───────────────────────────────────────────────────────────────────
+  function renderRail() {
+    const hexes = $$('#dpb-progress-strip .dpb-phex');
+    const currentStep = state.step;
+    hexes.forEach((h, i) => {
+      const stepNum = i + 1;
+      h.classList.remove('dpb-is-active', 'dpb-is-done');
+      if (stepNum < currentStep) h.classList.add('dpb-is-done');
+      else if (stepNum === currentStep) h.classList.add('dpb-is-active');
+    });
+    // Update the "01 / 05" indicator
+    const indicator = $('#dpb-step-indicator');
+    if (indicator) {
+      const padded = String(currentStep).padStart(2, '0');
+      const total = String(STEPS.length).padStart(2, '0');
+      indicator.innerHTML = '<strong>' + padded + '</strong> / ' + total;
+    }
+  }
+
+  // Sync the user's name across all .dpb-name spans on all screens.
+  // Each non-Screen-1 greeting needs the name updated when state.name
+  // changes; Screen 1's #dpb-greeting-name-1 has its own live-typing
+  // behavior driven by the name input.
+  function syncNameAcrossScreens() {
+    const display = state.name && state.name.trim() ? state.name.trim() : 'there';
+    $$('.dpb-name-2, .dpb-name-3, .dpb-name-4').forEach(el => {
+      el.textContent = display;
+    });
+    // Screen 5's review header uses a name suffix
+    const suffix = $('#dpb-review-name-suffix');
+    if (suffix) {
+      suffix.innerHTML = state.name && state.name.trim()
+        ? (', <span class="dpb-accent" style="color:var(--dpb-brand);font-weight:500;">' + escapeHtml(state.name.trim()) + '</span>')
+        : '';
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // RENDER: show a specific screen
+  // ───────────────────────────────────────────────────────────────────
+  function showScreen(id) {
+    $$('.dpb-screen').forEach(s => s.classList.remove('dpb-is-active'));
+    const target = $('.dpb-screen-' + id) || $('[data-screen="' + id + '"]');
+    if (target) target.classList.add('dpb-is-active');
+    if (id !== 'result') state.step = parseInt(id, 10);
+    // Scroll to top
+    const root = $('#dpb-app');
+    if (root && root.scrollIntoView) {
+      root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    renderRail();
+    syncNameAcrossScreens();
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // VALIDATION: enable/disable Continue buttons
+  // ───────────────────────────────────────────────────────────────────
+  function updateContinueButtons() {
+    const next1 = $('[data-action="next-1"]');
+    const next2 = $('[data-action="next-2"]');
+    const next3 = $('[data-action="next-3"]');
+    const next4 = $('[data-action="next-4"]');
+    if (next1) next1.disabled = !(state.name && state.name.trim());
+    if (next2) next2.disabled = !state.segment;
+    if (next3) next3.disabled = !(state.goalText && state.goalText.trim().length >= 10);
+    if (next4) next4.disabled = !state.level;
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // RENDER: review screen
+  // ───────────────────────────────────────────────────────────────────
+  function renderReview() {
+    const nameSuffix = $('#dpb-review-name-suffix');
+    if (nameSuffix) {
+      nameSuffix.innerHTML = state.name && state.name.trim()
+        ? (', <span class="dpb-accent" style="color:var(--dpb-brand);font-weight:500;">' + escapeHtml(state.name.trim()) + '</span>')
+        : '';
+    }
+
+    const list = $('#dpb-review-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const seg = SEGMENT_DISPLAY[state.segment] || SEGMENT_DISPLAY['Other'];
+
+    // Determine the effective prompt (defaults to selected, falls back to inferred)
+    if (!state.effectivePrompt) {
+      state.effectivePrompt = state.selectedPrompt || inferPromptFromGoal(state.goalText);
+    }
+
+    // Generate synopsis if not yet edited
+    if (!state.synopsisEdited) {
+      state.synopsis = generateSynopsisPlain(state.effectivePrompt, state.goalText);
+    }
+
+    // 1. Segment card → screen 2 in the new flow
+    list.appendChild(buildReviewCard({
+      tone: seg.tone, icon: seg.icon,
+      label: 'You work in', value: escapeHtml(seg.name),
+      editStep: 2
+    }));
+
+    // 2. Synopsis card (replaces the verbatim "you want to" card)
+    list.appendChild(buildSynopsisCard());
+
+    // 3. Level card → screen 4 in the new flow
+    const levelToneMap = { Novice: 'green', Beginner: 'blue', Intermediate: 'orange', Expert: 'pink' };
+    const levelQuotes = {
+      Novice: 'Brand new to Dimensions',
+      Beginner: 'Poked around, sometimes get stuck',
+      Intermediate: 'Use it regularly for specific tasks',
+      Expert: 'Colleagues come to me with Dimensions questions'
+    };
+    list.appendChild(buildReviewCard({
+      tone: levelToneMap[state.level] || 'blue',
+      icon: '◉',
+      label: 'Starting comfort',
+      value: levelQuotes[state.level] + ' <span class="dpb-review-value-quiet">· ' + state.level + '</span>',
+      editStep: 4
+    }));
+  }
+
+  function buildReviewCard({ tone, icon, label, value, editStep, tall }) {
+    const card = document.createElement('div');
+    card.className = 'dpb-review-card' + (tall ? ' dpb-review-card-tall' : '');
+    card.innerHTML =
+      '<span class="dpb-review-icon dpb-ico" data-tone="' + tone + '">' + icon + '</span>' +
+      '<span class="dpb-review-body">' +
+        '<span class="dpb-review-label">' + label + '</span>' +
+        '<span class="dpb-review-value">' + value + '</span>' +
+      '</span>' +
+      '<button type="button" class="dpb-btn dpb-btn-outline" data-action="edit" data-edit-step="' + editStep + '">Edit</button>';
+    return card;
+  }
+
+  // The synopsis card: tap-to-edit text + reclassify dropdown.
+  function buildSynopsisCard() {
+    const card = document.createElement('div');
+    card.className = 'dpb-synopsis-card';
+
+    // If the user has edited the synopsis, show their text verbatim.
+    // Otherwise show the generated HTML version (with goal-type tag + noun styling).
+    const synopsisHTML = state.synopsisEdited
+      ? escapeHtml(state.synopsis)
+      : generateSynopsis(state.effectivePrompt, state.goalText);
+
+    const optionsHTML = Object.keys(GOAL_LABELS).map(key => {
+      const selected = (key === state.effectivePrompt) ? ' selected' : '';
+      return '<option value="' + key + '"' + selected + '>' + GOAL_LABELS[key] + '</option>';
+    }).join('');
+
+    card.innerHTML =
+      '<span class="dpb-synopsis-icon dpb-ico">◊</span>' +
+      '<div class="dpb-synopsis-body">' +
+        '<span class="dpb-synopsis-label">What we think you\'re after</span>' +
+        '<div class="dpb-synopsis-text" id="dpb-synopsis-text" contenteditable="true" spellcheck="true" data-role="synopsis">' +
+          synopsisHTML +
+        '</div>' +
+        '<div class="dpb-synopsis-tap-hint"><span class="dpb-ico">✎</span> Tap to edit if we got it wrong</div>' +
+        '<div class="dpb-reclass-row">' +
+          '<span class="dpb-reclass-label">Goal type</span>' +
+          '<select class="dpb-reclass-select" id="dpb-reclass-select">' + optionsHTML + '</select>' +
+        '</div>' +
+      '</div>' +
+      '<button type="button" class="dpb-btn dpb-btn-outline" data-action="edit" data-edit-step="3">Edit goal</button>';
+    return card;
+  }
+
+
+  // ───────────────────────────────────────────────────────────────────
+  // RECOMMENDATION SCORING
+  //
+  // Each topic in COURSES has:
+  //   keywords: string[]   — synonyms / phrases the topic answers
+  //   goals: { [goalKey]: { pri: 1|2|3, why: string } }
+  //
+  // scoreTopic(topic, courseId, state) returns:
+  //   { score, kwMatches, goalPri, courseLevelGap }
+  //
+  // The philosophy:
+  //   - A topic explicitly tagged for the user's goal (pri:1) starts at 1.0
+  //   - Each keyword hit adds 0.8 (specific queries can override generic ordering)
+  //   - Courses more novice than the user get a score multiplier < 1
+  //     so their topics drop out UNLESS they have strong keyword matches
+  //
+  // rankTopics(state) returns all topics scored, sorted descending, each
+  // annotated with its parent course.
+  // ───────────────────────────────────────────────────────────────────
+  const LEVEL_RANK = { 'Novice': 1, 'Beginner': 2, 'Intermediate': 3, 'Expert': 4 };
+  const GOAL_PRI_BASE = { 1: 1.0, 2: 0.7, 3: 0.5 };
+  const KW_MATCH_BONUS = 0.8;
+  const SEGMENT_BOOST  = 0.7;  // added to every topic in a course whose
+                                // segmentBoost list includes the user's segment.
+                                // 0.7 makes segment-relevant specialty courses
+                                // roughly competitive with pri:1 goal matches
+                                // (base 1.0), without automatically dominating.
+
+  // Escape regex metachars so keywords like "TL;DR" or "?" don't blow up.
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // Count how many of a topic's keywords appear in the user's goal text.
+  // Multi-word keywords use substring match; single-word keywords use
+  // whole-word match so that "AI" doesn't match "aid" etc.
+  function countKeywordMatches(keywords, goalText) {
+    if (!keywords || !keywords.length || !goalText) return 0;
+    const text = goalText.toLowerCase();
+    let hits = 0;
+    keywords.forEach(kw => {
+      const k = kw.toLowerCase();
+      if (k.indexOf(' ') !== -1 || k.length < 4) {
+        // Multi-word phrase OR very short token: substring match
+        if (text.indexOf(k) !== -1) hits++;
+      } else {
+        // Single longer word: whole-word match with regex
+        const re = new RegExp('\\b' + escapeRegex(k) + '\\b', 'i');
+        if (re.test(text)) hits++;
+      }
+    });
+    return hits;
+  }
+
+  function scoreTopic(topic, courseId, state) {
+    const course = COURSES[courseId];
+    const promptKey = state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText) || 'exploring';
+    const goalText = state.goalText || '';
+
+    // Goal-based base score
+    let score = 0;
+    let goalPri = null;
+    const goalMatch = topic.goals && topic.goals[promptKey];
+    if (goalMatch) {
+      goalPri = goalMatch.pri;
+      score += GOAL_PRI_BASE[goalPri] || 0.5;
+    }
+
+    // Keyword-based boost
+    const kwMatches = countKeywordMatches(topic.keywords, goalText);
+    score += kwMatches * KW_MATCH_BONUS;
+
+    // Segment boost: if a course declares itself as mainline for a segment
+    // (e.g. Reviewer Finder → GFN/Publisher), users in that segment get a
+    // score bump on every topic in the course. This turns a specialty
+    // course into a "mainline" course for the audiences who actually
+    // depend on it, without cluttering recommendations for everyone else.
+    if (course.segmentBoost && state.segment && course.segmentBoost.indexOf(state.segment) !== -1) {
+      score += SEGMENT_BOOST;
+    }
+
+    // Level modifier. Two symmetric rules:
+    //   - Below-level courses (course more novice than user) lose score
+    //     so their topics drop out unless keyword matches are strong.
+    //   - Above-level courses (course more advanced than user) also lose
+    //     score, BUT ONLY when the user showed no keyword interest —
+    //     this preserves aspirational surfacing when someone asks for
+    //     something specific by name, while preventing above-level
+    //     specialty courses from leaking into general recommendations.
+    const uL = LEVEL_RANK[state.level] || 1;
+    const cL = LEVEL_RANK[course.level] || 1;
+    const gap = uL - cL; // positive = course is more novice than user
+    let levelMult = 1.0;
+    if (gap === 1) levelMult = 0.85;
+    else if (gap === 2) levelMult = 0.65;
+    else if (gap >= 3) levelMult = 0.50;
+    else if (kwMatches === 0 && gap === -2) levelMult = 0.75;
+    else if (kwMatches === 0 && gap <= -3) levelMult = 0.55;
+    score *= levelMult;
+
+    return { score, kwMatches, goalPri, courseLevelGap: gap };
+  }
+
+  function rankTopics(state) {
+    const all = [];
+    Object.keys(COURSES).forEach(courseId => {
+      COURSES[courseId].topics.forEach(topic => {
+        const s = scoreTopic(topic, courseId, state);
+        if (s.score > 0) {
+          all.push({
+            topic: topic,
+            courseId: courseId,
+            course: COURSES[courseId],
+            score: s.score,
+            kwMatches: s.kwMatches,
+            goalPri: s.goalPri,
+            courseLevelGap: s.courseLevelGap,
+            // Pull the goal-specific "why" if there is one; otherwise
+            // synthesise a soft fallback from the topic label
+            why: (topic.goals && topic.goals[state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText) || 'exploring']
+                  && topic.goals[state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText) || 'exploring'].why)
+                 || 'Directly matches keywords in your goal.'
+          });
+        }
+      });
+    });
+    all.sort((a, b) => b.score - a.score);
+    return all;
+  }
+
+  // Given ranked topics, group into a shape suitable for rendering.
+  //
+  // Level-based filtering rule (the key to "don't show every course to
+  // everyone"): a course whose level is MORE THAN ONE STEP below the
+  // user's stated level goes into `standaloneTopics`, not as a course
+  // card. So:
+  //   • Novice: all courses show as cards (they need foundations)
+  //   • Beginner: all courses show (DM-101 is one step below, that's ok)
+  //   • Intermediate: DM-101 (gap=2) becomes standalone; DM-102, DM-103 show
+  //   • Expert: DM-101 (gap=3) and DM-102 (gap=2) become standalone; DM-103 shows
+  //
+  // Result: as the course library grows, users see courses appropriate
+  // to their level as full cards, and pluck out specific topics from
+  // foundational courses only when their goal actually needs them.
+  //
+  // Primary answer surfaces when the top topic has a specific keyword
+  // match — either 2+ matches, or 1 match that clearly outranks #2.
+  function buildRecommendation(state) {
+    const ranked = rankTopics(state);
+    const TOP_N = 8;
+
+    // Discerning-when-specific: if ANY topic across the FULL ranked list
+    // matched a keyword, the user typed something specific — respect it.
+    // We check the full ranked list (not just the top 8) because segment-
+    // boosted topics without keyword hits can otherwise crowd out
+    // keyword-matched topics that are the actual answer to the query.
+    //
+    // Filter ranked to only include topics from courses that had at least
+    // one keyword hit. Then slice to top N.
+    const anyKeywordInRanked = ranked.some(function (t) { return t.kwMatches > 0; });
+    let workingRanked = ranked;
+    if (anyKeywordInRanked) {
+      const relevantCourses = {};
+      ranked.forEach(function (t) {
+        if (t.kwMatches > 0) relevantCourses[t.courseId] = true;
+      });
+      workingRanked = ranked.filter(function (t) { return relevantCourses[t.courseId]; });
+    }
+
+    const top = workingRanked.slice(0, TOP_N);
+
+    // Group by course
+    const byCourse = {};
+    top.forEach(function (item) {
+      if (!byCourse[item.courseId]) byCourse[item.courseId] = [];
+      byCourse[item.courseId].push(item);
+    });
+
+    // Preserve natural course order for course cards (DM-101 → 102 → …)
+    const orderedCids = Object.keys(COURSES).filter(function (cid) {
+      return byCourse[cid] && byCourse[cid].length;
+    });
+
+    // Split: course cards for level-appropriate; standalone for edge cases
+    const courses = [];
+    const standaloneTopics = [];
+    orderedCids.forEach(function (cid) {
+      const items = byCourse[cid];
+      const gap = items[0].courseLevelGap;
+      const anyKeywordMatch = items.some(function (it) { return it.kwMatches > 0; });
+      const isLeakedAboveLevel = gap <= -2 && items.length === 1 && !anyKeywordMatch;
+      if (gap >= 2 || isLeakedAboveLevel) {
+        items.forEach(function (it) { standaloneTopics.push(it); });
+      } else {
+        courses.push({ courseId: cid, course: COURSES[cid], matchedTopics: items });
+      }
+    });
+
+    // Primary answer: strong specific match wins the hero slot
+    let primary = null;
+    if (top.length) {
+      const topItem = top[0];
+      const second = top[1];
+      const isDecisive = topItem.kwMatches >= 2
+        || (topItem.kwMatches >= 1 && (!second || topItem.score > second.score * 1.3));
+      if (isDecisive) primary = topItem;
+    }
+
+    return { courses: courses, standaloneTopics: standaloneTopics, primary: primary, allRanked: top };
+  }
+
+
+  // ───────────────────────────────────────────────────────────────────
+  // RENDER: result screen
+  // ───────────────────────────────────────────────────────────────────
+  function renderResult() {
+    // name
+    const nameEl = $('#dpb-result-name');
+    if (nameEl) nameEl.textContent = state.name || 'you';
+
+    // goal — show the agreed synopsis as the primary quote, with the user's verbatim text beneath
+    const promptKeyForSynopsis = state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText);
+    const synopsisHTML = state.synopsisEdited
+      ? escapeHtml(state.synopsis)
+      : generateSynopsis(promptKeyForSynopsis, state.goalText);
+    $('#dpb-result-synopsis').innerHTML = synopsisHTML;
+    $('#dpb-result-goal').textContent = '"' + state.goalText + '"';
+
+    // segment
+    const seg = SEGMENT_DISPLAY[state.segment] || SEGMENT_DISPLAY['Other'];
+    const segColor = ({
+      blue: 'var(--dpb-light-blue)',
+      orange: 'var(--dpb-orange)',
+      pink: 'var(--dpb-pink)',
+      green: 'var(--dpb-green)',
+      muted: 'var(--dpb-text-mid)'
+    })[seg.tone];
+    $('#dpb-result-segment').innerHTML =
+      '<span class="dpb-ico" style="color:' + segColor + '">' + seg.icon + '</span>' + seg.name;
+
+    // level
+    $('#dpb-result-level').textContent = state.level || '—';
+
+    // date
+    const today = new Date();
+    const fmt = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    $('#dpb-result-date').textContent = fmt;
+
+    // beyond AI line
+    // Prefer the user-confirmed effectivePrompt; fall back gracefully.
+    const promptKey = state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText);
+    const aiLine = BEYOND_AI_LINES[promptKey] || BEYOND_AI_LINES['exploring'];
+    $('#dpb-beyond-ai').textContent = aiLine;
+
+    // ── NEW: Build the ranked recommendation ────────────────────────
+    // This replaces the old hardcoded 3-courses-with-3-topics-each model.
+    // The result groups only the courses that actually have relevant
+    // topics for this user (goal + free text + level).
+    const rec = buildRecommendation(state);
+    const coursesEl = $('#dpb-result-courses');
+    coursesEl.innerHTML = '';
+
+    // Total time: only sum the courses we're actually showing
+    const shownTotalMins = rec.courses.reduce((sum, c) => sum + (c.course.time || 0), 0);
+    const totalMatched = rec.courses.reduce((sum, c) => sum + c.matchedTopics.length, 0) + rec.standaloneTopics.length;
+    const courseCountWords = ['', 'one course', 'two courses', 'three courses', 'four courses', 'five courses'];
+    const cnt = rec.courses.length;
+    const courseCountLabel = courseCountWords[cnt] || (cnt + ' courses');
+    const totalTimeEl = $('#dpb-result-total-time');
+    if (totalTimeEl) {
+      if (cnt === 0) {
+        totalTimeEl.textContent = 'A quick exploration path';
+      } else {
+        totalTimeEl.textContent = '~' + shownTotalMins + ' min · ' + courseCountLabel + ' · ' + totalMatched + ' matched topics';
+      }
+    }
+
+    // Render primary answer callout if there is one
+    if (rec.primary) {
+      const p = rec.primary;
+      const primaryCard = document.createElement('div');
+      primaryCard.className = 'dpb-primary-answer';
+      primaryCard.innerHTML =
+        '<div class="dpb-primary-badge">◉ This is the topic that answers your goal most directly</div>' +
+        '<div class="dpb-primary-label">' + escapeHtml(p.topic.label) + '</div>' +
+        '<div class="dpb-primary-why">' + p.why + '</div>' +
+        '<div class="dpb-primary-loc">Lives in <strong>' + escapeHtml(p.course.shortName || p.course.title) + '</strong> · ' + p.course.time + ' min · ' + p.course.level + '</div>';
+      coursesEl.appendChild(primaryCard);
+    }
+
+    // Render each course card that survived the filter
+    rec.courses.forEach((entry, idx) => {
+      const c = entry.course;
+      const matched = entry.matchedTopics;
+      const cardIdx = Object.keys(COURSES).indexOf(entry.courseId); // preserve consistent color per course
+      const card = document.createElement('div');
+      card.className = 'dpb-course-card dpb-course-' + (cardIdx + 1);
+      card.innerHTML =
+        '<div class="dpb-course-deco"></div>' +
+        '<div class="dpb-course-header">' +
+          '<div class="dpb-course-order">' + (idx + 1) + '</div>' +
+          '<div class="dpb-course-tag">' + escapeHtml(c.shortName || c.seriesTag) + '</div>' +
+          '<div class="dpb-course-meta">' +
+            '<span class="dpb-course-time">' + c.time + ' min</span>' +
+            '<span class="dpb-course-level-pip">' + c.level + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<h2 class="dpb-course-title">' + c.title + '</h2>' +
+        '<p class="dpb-course-desc">' + c.desc + '</p>' +
+        '<div class="dpb-topic-callout">' +
+          '<div class="dpb-topic-callout-label"><span class="dpb-ico">◎</span> ' + matched.length + ' topic' + (matched.length === 1 ? '' : 's') + ' matched for your goal</div>' +
+          '<div class="dpb-topic-list">' +
+            matched.map(m => (
+              '<div class="dpb-topic-row">' +
+                '<span class="dpb-topic-arrow dpb-ico">▸</span>' +
+                '<div>' +
+                  '<span class="dpb-topic-name">' + escapeHtml(m.topic.label) + '</span>' +
+                  '<div class="dpb-topic-why">' + m.why + '</div>' +
+                '</div>' +
+              '</div>'
+            )).join('') +
+          '</div>' +
+        '</div>' +
+        '<div class="dpb-course-footer">' +
+          '<span class="dpb-course-count">' + c.topics.length + ' topics in this course</span>' +
+          '<button type="button" class="dpb-btn dpb-btn-white" data-action="open-course" data-course-id="' + c.id + '">Open course <span class="dpb-ico">↗</span></button>' +
+        '</div>';
+      coursesEl.appendChild(card);
+    });
+
+    // Render standalone topics (from below-level courses that got dropped)
+    if (rec.standaloneTopics.length) {
+      const standaloneWrap = document.createElement('div');
+      standaloneWrap.className = 'dpb-standalone-wrap';
+      standaloneWrap.innerHTML =
+        '<div class="dpb-standalone-heading">Also worth a look · specific topics from courses you can otherwise skip</div>' +
+        rec.standaloneTopics.map(m => (
+          '<div class="dpb-standalone-item">' +
+            '<div class="dpb-standalone-icon">✦</div>' +
+            '<div class="dpb-standalone-body">' +
+              '<div class="dpb-standalone-label">' + escapeHtml(m.topic.label) + '</div>' +
+              '<div class="dpb-standalone-why">' + m.why + '</div>' +
+              '<div class="dpb-standalone-loc">In <strong>' + escapeHtml(m.course.shortName || m.course.title) + '</strong></div>' +
+            '</div>' +
+          '</div>'
+        )).join('');
+      coursesEl.appendChild(standaloneWrap);
+    }
+
+    // Empty-state (should be rare — happens if no topic scored above 0)
+    if (rec.courses.length === 0 && rec.standaloneTopics.length === 0) {
+      coursesEl.innerHTML =
+        '<div class="dpb-empty-state">' +
+          '<div class="dpb-empty-icon">◌</div>' +
+          '<div class="dpb-empty-title">We couldn\'t match anything specific.</div>' +
+          '<div class="dpb-empty-desc">Try describing your goal in a few more words on the previous step, or pick one of the starter chips to give us a direction.</div>' +
+        '</div>';
+    }
+
+    // headline tweak based on level
+    const note = LEVEL_NOTES[state.level];
+    if (note) {
+      const existing = $('#dpb-level-note');
+      if (existing) existing.remove();
+      const noteEl = document.createElement('div');
+      noteEl.id = 'dpb-level-note';
+      noteEl.style.cssText = 'font-size:13px; color:var(--dpb-text-mid); margin:-24px 0 28px; padding:12px 16px; background:rgba(64,187,237,0.04); border-radius:6px; border-left:2px solid rgba(64,187,237,0.4); line-height:1.5;';
+      noteEl.textContent = note;
+      const ms = $('.dpb-meta-strip');
+      if (ms && ms.parentNode) ms.parentNode.insertBefore(noteEl, ms.nextSibling);
+    }
+  }
+
+  // Fallback: if no starter chip was picked, guess from text keywords.
+  // Order matters — most specific patterns first.
+  function inferPromptFromGoal(text) {
+    const t = (text || '').toLowerCase();
+    if (/\b(fund|grant|funder|funding)\b/.test(t))                       return 'track-funding';
+    if (/\b(benchmark|compare|peer|peers|ranking|against)\b/.test(t))    return 'benchmark';
+    if (/\b(reading list|literature review|similar (work|paper|article)|like this|related (paper|work|article))\b/.test(t)) return 'reading-list';
+    if (/\b(impact|policy citation|stakeholder|leadership|board|altmetric)\b/.test(t) && !/\bpaper(s)? (on|about|in) /.test(t)) return 'show-impact';
+    if (/\b(find|search|literature|paper|publication|article|study|review)\b/.test(t)) return 'find-papers';
+    return 'exploring';
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // SYNOPSIS GENERATION — rule-based rephrase + named goal type + focus
+  // Returns plain-text + an HTML version with the goal-type tag and
+  // any extracted nouns marked up. Editable on the review screen.
+  // ───────────────────────────────────────────────────────────────────
+  const GOAL_LABELS = {
+    'find-papers':   'finding papers on a topic',
+    'track-funding': 'tracking funding in a field',
+    'benchmark':     'benchmarking against peers',
+    'show-impact':   'showing research impact',
+    'reading-list':  'building a reading list',
+    'exploring':     'exploring what Dimensions can do'
+  };
+
+  const GOAL_FOCUS = {
+    'find-papers':   'the search syntax and filter tools that get rid of the noise',
+    'track-funding': 'the Funders heatmap and the funder-output filtering',
+    'benchmark':     'researcher and organisation profiles plus article-level categorisation',
+    'show-impact':   'citation, Altmetric, and policy-citation signals',
+    'reading-list':  'similar-document search and Topic Refine clustering',
+    'exploring':     'the interface tour and the Analytical Views panel'
+  };
+
+  // Pull the most likely subject noun(s) out of the user's goal text.
+  // Honest about the trade-off: this is regex, not NLP. It catches the
+  // common shapes ("about X", "for X", "on X", "research X") and falls
+  // back to "your topic" if it can't find one.
+  function extractSubject(text) {
+    if (!text) return null;
+    const cleaned = text.trim().replace(/\s+/g, ' ');
+    // Patterns ordered most-specific-first
+    const patterns = [
+      /(?:research(?:ing)?|study(?:ing)?|investigat(?:e|ing))\s+([a-z][a-z\s\-]{1,40}?)(?:\.|,|$|\s+(?:so|for|to|because|and|with|in)\b)/i,
+      /(?:about|on|regarding|around)\s+([a-z][a-z\s\-]{1,40}?)(?:\.|,|$|\s+(?:so|for|to|because|and|with|in)\b)/i,
+      /(?:papers?|articles?|publications?|grants?)\s+(?:on|about|regarding|in)\s+([a-z][a-z\s\-]{1,40}?)(?:\.|,|$|\s+(?:so|for|to|because|and|with|in)\b)/i,
+      /(?:funding|grants?)\s+(?:for|in)\s+([a-z][a-z\s\-]{1,40}?)(?:\.|,|$|\s+(?:so|for|to|because|and|with|in)\b)/i
+    ];
+    for (const p of patterns) {
+      const m = cleaned.match(p);
+      if (m && m[1]) {
+        const noun = m[1].trim().replace(/[.,;:]+$/, '');
+        if (noun.length >= 2 && noun.length <= 50) return noun;
+      }
+    }
+    return null;
+  }
+
+  // Build an HTML synopsis with the goal-type tag bolded and the noun italicised.
+  function generateSynopsis(promptKey, goalText) {
+    const label = GOAL_LABELS[promptKey] || GOAL_LABELS['exploring'];
+    const focus = GOAL_FOCUS[promptKey] || GOAL_FOCUS['exploring'];
+    const noun  = extractSubject(goalText);
+    // If the noun is just a word already inside the goal-type label
+    // ("impact" extracted alongside "showing research impact"), drop it
+    // — otherwise we get "showing research impact related to impact."
+    const labelWords = new Set(label.toLowerCase().split(/\s+/));
+    const nounIsRedundant = noun && labelWords.has(noun.toLowerCase().trim());
+    const nounPhrase = (noun && !nounIsRedundant)
+      ? ' related to <span class="dpb-goal-noun">' + escapeHtml(noun) + '</span>'
+      : '';
+    return 'Sounds like your core need is <span class="dpb-goal-tag">' + label + '</span>' + nounPhrase + '. We\'ll point you at ' + focus + '.';
+  }
+
+  // Plain-text equivalent for the textContent fallback (used after user edits inline).
+  function generateSynopsisPlain(promptKey, goalText) {
+    const label = GOAL_LABELS[promptKey] || GOAL_LABELS['exploring'];
+    const focus = GOAL_FOCUS[promptKey] || GOAL_FOCUS['exploring'];
+    const noun  = extractSubject(goalText);
+    const labelWords = new Set(label.toLowerCase().split(/\s+/));
+    const nounIsRedundant = noun && labelWords.has(noun.toLowerCase().trim());
+    const nounPhrase = (noun && !nounIsRedundant) ? ' related to ' + noun : '';
+    return 'Sounds like your core need is ' + label + nounPhrase + '. We\'ll point you at ' + focus + '.';
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // EXPORT helpers
+  // ───────────────────────────────────────────────────────────────────
+
+  // Builds the off-screen print document from current state, then triggers
+  // EXPORT PDF
+  // Uses the browser's native print → save-as-PDF flow. Building a full PDF
+  // in-browser without a library isn't feasible; window.print() with a
+  // dedicated print stylesheet is the standard pattern and produces a
+  // clean document.
+  function exportPDF() {
+    // Tell the user what to expect — "Export PDF" sounds like it'll
+    // download a file directly, but window.print() opens the browser's
+    // print dialog. The user picks "Save as PDF" as the destination.
+    toast('Opening print dialog — choose "Save as PDF" as the destination');
+
+    try {
+      buildPrintDoc();
+    } catch (err) {
+      // If buildPrintDoc fails for any reason, log it but still try
+      // to open the dialog so the user isn't left wondering what happened.
+      console.error('buildPrintDoc failed:', err);
+      toast('Could not build the PDF document. See console for details.');
+      return;
+    }
+
+    // Give the browser a tick to lay out the print doc + show the toast
+    // before opening the dialog.
+    setTimeout(() => {
+      try {
+        window.print();
+      } catch (err) {
+        console.error('window.print() failed:', err);
+      }
+    }, 350);
+  }
+
+  function buildPrintDoc() {
+    const seg       = SEGMENT_DISPLAY[state.segment] || SEGMENT_DISPLAY['Other'];
+    const promptKey = state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText);
+    const today     = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Synopsis: bold the goal-type word, drop the noun-styling spans for cleaner print typography.
+    const synopsis = state.synopsisEdited
+      ? escapeHtml(state.synopsis)
+      : generatePrintSynopsis(promptKey, state.goalText);
+
+    const nameForDoc = state.name ? escapeHtml(state.name) : 'you';
+
+    // Header
+    $('#dpb-pd-prepared').innerHTML =
+      'Prepared for <strong style="color:#0d0a2e">' + nameForDoc + '</strong> · ' +
+      escapeHtml(seg.name) + ' track · Generated ' + today;
+
+    // Summary
+    $('#dpb-pd-summary-text').innerHTML = synopsis;
+    $('#dpb-pd-summary-original').textContent = 'In your own words: ' + (state.goalText || '—');
+
+    // Meta strip
+    $('#dpb-pd-meta-segment').textContent = seg.name;
+    $('#dpb-pd-meta-level').textContent   = state.level || '—';
+    $('#dpb-pd-meta-date').textContent    = today;
+
+    // Beyond: AI line
+    const aiLine = BEYOND_AI_LINES[promptKey] || BEYOND_AI_LINES['exploring'];
+    $('#dpb-pd-ai').textContent = aiLine;
+
+    // Foot
+    $('#dpb-pd-foot-name').textContent = state.name || 'Your Dimensions path';
+    $('#dpb-pd-foot-date').textContent = today;
+
+    // Courses — use the ranked recommendation
+    const rec = buildRecommendation(state);
+    const coursesEl = $('#dpb-pd-courses');
+    coursesEl.innerHTML = '';
+    rec.courses.forEach((entry, idx) => {
+      const c = entry.course;
+      const matched = entry.matchedTopics;
+      const cardIdx = Object.keys(COURSES).indexOf(entry.courseId);
+      const block = document.createElement('div');
+      block.className = 'dpb-pd-course dpb-pd-course-' + (cardIdx + 1);
+      block.innerHTML =
+        '<div class="dpb-pd-course-header">' +
+          '<div class="dpb-pd-course-tag"><span class="dpb-pd-course-num">' + (idx + 1) + '</span>' + escapeHtml(c.shortName || c.seriesTag) + '</div>' +
+          '<h2 class="dpb-pd-course-title">' + escapeHtml(c.title) + '</h2>' +
+          '<div class="dpb-pd-course-meta">' + c.time + ' min · ' + c.level + ' level</div>' +
+        '</div>' +
+        '<div class="dpb-pd-track">' +
+          '<div class="dpb-pd-track-cell"><strong>Started</strong><span class="dpb-pd-track-line"></span></div>' +
+          '<div class="dpb-pd-track-cell"><strong>Completed</strong><span class="dpb-pd-track-line"></span></div>' +
+        '</div>' +
+        '<div class="dpb-pd-course-body">' +
+          '<p class="dpb-pd-course-desc">' + escapeHtml(c.desc) + '</p>' +
+          '<div class="dpb-pd-topics-label">' + matched.length + ' topic' + (matched.length === 1 ? '' : 's') + ' matched for your goal</div>' +
+          matched.map(m => (
+            '<div class="dpb-pd-topic">' +
+              '<div class="dpb-pd-checkbox" aria-hidden="true"></div>' +
+              '<div class="dpb-pd-topic-body">' +
+                '<div class="dpb-pd-topic-name">' + escapeHtml(m.topic.label) + '</div>' +
+                '<p class="dpb-pd-topic-why">' + escapeHtml(m.why) + '</p>' +
+              '</div>' +
+            '</div>'
+          )).join('') +
+          '<div class="dpb-pd-notes">' +
+            '<div class="dpb-pd-notes-label">Notes &amp; takeaways</div>' +
+            '<div class="dpb-pd-notes-line"></div>' +
+            '<div class="dpb-pd-notes-line"></div>' +
+            '<div class="dpb-pd-notes-line"></div>' +
+            '<div class="dpb-pd-notes-line"></div>' +
+          '</div>' +
+        '</div>';
+      coursesEl.appendChild(block);
+    });
+
+    // Include standalone topics as their own compact section in the PDF
+    if (rec.standaloneTopics.length) {
+      const standalone = document.createElement('div');
+      standalone.className = 'dpb-pd-standalone';
+      standalone.innerHTML =
+        '<h2 class="dpb-pd-standalone-heading">Also worth a look</h2>' +
+        '<p class="dpb-pd-standalone-sub">Specific topics from courses you can otherwise skip — the individual lessons still solve your goal.</p>' +
+        rec.standaloneTopics.map(m => (
+          '<div class="dpb-pd-topic">' +
+            '<div class="dpb-pd-checkbox" aria-hidden="true"></div>' +
+            '<div class="dpb-pd-topic-body">' +
+              '<div class="dpb-pd-topic-name">' + escapeHtml(m.topic.label) + '</div>' +
+              '<p class="dpb-pd-topic-why">' + escapeHtml(m.why) + ' <em>(in ' + escapeHtml(m.course.shortName || m.course.title) + ')</em></p>' +
+            '</div>' +
+          '</div>'
+        )).join('');
+      coursesEl.appendChild(standalone);
+    }
+  }
+
+  // Synopsis for print uses <strong> (semantic + serif-friendly) instead of
+  // brand-colored spans, which look like ad copy in print typography.
+  function generatePrintSynopsis(promptKey, goalText) {
+    const label = GOAL_LABELS[promptKey] || GOAL_LABELS['exploring'];
+    const focus = GOAL_FOCUS[promptKey] || GOAL_FOCUS['exploring'];
+    const noun  = extractSubject(goalText);
+    const labelWords = new Set(label.toLowerCase().split(/\s+/));
+    const nounIsRedundant = noun && labelWords.has(noun.toLowerCase().trim());
+    const nounPhrase = (noun && !nounIsRedundant) ? ' related to <em>' + escapeHtml(noun) + '</em>' : '';
+    return 'Your core need is <strong>' + escapeHtml(label) + '</strong>' + nounPhrase + '. ' +
+           'This path points you at ' + escapeHtml(focus) + '.';
+  }
+
+  function copyAsText() {
+    const seg = SEGMENT_DISPLAY[state.segment] || SEGMENT_DISPLAY['Other'];
+    const promptKey = state.effectivePrompt || state.selectedPrompt || inferPromptFromGoal(state.goalText);
+    const rec = buildRecommendation(state);
+    const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const synopsis = state.synopsisEdited ? state.synopsis : generateSynopsisPlain(promptKey, state.goalText);
+
+    const lines = [];
+    lines.push('YOUR DIMENSIONS LEARNING PATH');
+    lines.push('Generated ' + today + (state.name ? ' for ' + state.name : ''));
+    lines.push('');
+    lines.push('Built around: ' + synopsis);
+    lines.push('In your words: ' + state.goalText);
+    lines.push('Segment: ' + seg.name);
+    lines.push('Starting level: ' + state.level);
+    const txShownMins = rec.courses.reduce((sum, c) => sum + (c.course.time || 0), 0);
+    lines.push('Estimated time: ~' + txShownMins + ' minutes across ' + rec.courses.length + ' course' + (rec.courses.length === 1 ? '' : 's'));
+    lines.push('');
+
+    if (rec.primary) {
+      lines.push('═══════════════════════════════');
+      lines.push('YOUR PRIMARY ANSWER');
+      lines.push('═══════════════════════════════');
+      lines.push('◉ ' + rec.primary.topic.label);
+      lines.push('  ' + rec.primary.why);
+      lines.push('  Lives in ' + (rec.primary.course.shortName || rec.primary.course.title));
+      lines.push('');
+    }
+
+    lines.push('═══════════════════════════════');
+    lines.push('COURSES MATCHED FOR YOUR GOAL');
+    lines.push('═══════════════════════════════');
+
+    rec.courses.forEach((entry, idx) => {
+      const c = entry.course;
+      lines.push('');
+      lines.push((idx + 1) + '. ' + c.title + ' (' + c.time + ' min · ' + c.level + ')');
+      lines.push('   ' + c.desc);
+      lines.push('');
+      lines.push('   ' + entry.matchedTopics.length + ' TOPIC' + (entry.matchedTopics.length === 1 ? '' : 'S') + ' MATCHED:');
+      entry.matchedTopics.forEach(m => {
+        lines.push('   • ' + m.topic.label);
+        lines.push('     ' + m.why);
+      });
+    });
+
+    if (rec.standaloneTopics.length) {
+      lines.push('');
+      lines.push('═══════════════════════════════');
+      lines.push('ALSO WORTH A LOOK');
+      lines.push('═══════════════════════════════');
+      lines.push('Specific topics from courses you can otherwise skip.');
+      lines.push('');
+      rec.standaloneTopics.forEach(m => {
+        lines.push('• ' + m.topic.label + ' (in ' + (m.course.shortName || m.course.title) + ')');
+        lines.push('  ' + m.why);
+      });
+    }
+
+    lines.push('');
+    lines.push('═══════════════════════════════');
+    lines.push('BEYOND THE COURSES');
+    lines.push('═══════════════════════════════');
+    lines.push('• AI Discovery in-product — ' + (BEYOND_AI_LINES[promptKey] || ''));
+    lines.push('• Dimensions Support Centre — help.dimensions.ai');
+    lines.push('• ReadCube / Papers Pro — "Chat with PDF" for any paper you find');
+    lines.push('• Weekly alerts — turn your best searches into recurring intelligence');
+
+    const text = lines.join('\n');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        () => toast('Copied to clipboard'),
+        () => fallbackCopy(text)
+      );
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); toast('Copied to clipboard'); }
+    catch (e) { toast('Press Ctrl+C to copy'); }
+    document.body.removeChild(ta);
+  }
+
+  function toast(msg) {
+    const el = $('#dpb-toast');
+    const text = $('#dpb-toast-text');
+    if (!el || !text) return;
+    text.textContent = msg;
+    el.classList.add('dpb-is-visible');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('dpb-is-visible'), 2200);
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // EVENT BINDING (addEventListener only, Skilljar-safe)
+  // ───────────────────────────────────────────────────────────────────
+  const app = $('#dpb-app');
+
+  // delegated click handler
+  app.addEventListener('click', (e) => {
+    const tile = e.target.closest('.dpb-tile');
+    if (tile && tile.parentElement && tile.parentElement.id === 'dpb-segments') {
+      $$('#dpb-segments .dpb-tile').forEach(t => t.classList.remove('dpb-is-selected'));
+      tile.classList.add('dpb-is-selected');
+      state.segment = tile.getAttribute('data-value');
+      updateContinueButtons();
+      return;
+    }
+
+    const chip = e.target.closest('.dpb-prompt-chip');
+    if (chip) {
+      $$('#dpb-prompts .dpb-prompt-chip').forEach(c => c.classList.remove('dpb-is-selected'));
+      chip.classList.add('dpb-is-selected');
+      const promptKey = chip.getAttribute('data-prompt');
+      state.selectedPrompt = promptKey;
+      // changing the prompt invalidates both the effective prompt and any cached synopsis edit
+      state.effectivePrompt = promptKey;
+      state.synopsisEdited = false;
+      state.synopsis = '';
+      // fill the textarea with template, but don't overwrite if the user has typed something different already
+      const ta = $('#dpb-goal');
+      const currentText = ta.value.trim();
+      const allTemplates = Object.values(PROMPT_TEMPLATES);
+      if (!currentText || allTemplates.includes(currentText)) {
+        ta.value = PROMPT_TEMPLATES[promptKey];
+        state.goalText = ta.value;
+        $('#dpb-goal-count').textContent = ta.value.length;
+      }
+      updateContinueButtons();
+      return;
+    }
+
+    const comfort = e.target.closest('.dpb-comfort-row');
+    if (comfort) {
+      $$('#dpb-comfort .dpb-comfort-row').forEach(c => c.classList.remove('dpb-is-selected'));
+      comfort.classList.add('dpb-is-selected');
+      state.level = comfort.getAttribute('data-level');
+      updateContinueButtons();
+      return;
+    }
+
+    const action = e.target.closest('[data-action]');
+    if (action) {
+      const a = action.getAttribute('data-action');
+
+      if (a === 'next-1') { showScreen(2); syncNameAcrossScreens(); return; }
+      if (a === 'next-2') { showScreen(3); return; }
+      if (a === 'next-3') { showScreen(4); return; }
+      if (a === 'next-4') { showScreen(5); renderReview(); return; }
+      if (a === 'back') {
+        if (state.step > 1) showScreen(state.step - 1);
+        return;
+      }
+      if (a === 'build') {
+        renderResult();
+        showScreen('result');
+        return;
+      }
+      if (a === 'edit') {
+        const stepNum = parseInt(action.getAttribute('data-edit-step'), 10);
+        if (stepNum) showScreen(stepNum);
+        return;
+      }
+      if (a === 'rebuild') {
+        // soft reset — keep name + segment + level, clear goal + synopsis
+        state.goalText = '';
+        state.selectedPrompt = null;
+        state.effectivePrompt = null;
+        state.synopsis = '';
+        state.synopsisEdited = false;
+        const ta = $('#dpb-goal');
+        if (ta) ta.value = '';
+        const cnt = $('#dpb-goal-count');
+        if (cnt) cnt.textContent = '0';
+        $$('#dpb-prompts .dpb-prompt-chip').forEach(c => c.classList.remove('dpb-is-selected'));
+        updateContinueButtons();
+        showScreen(3);
+        return;
+      }
+      if (a === 'export-pdf') { exportPDF(); return; }
+      if (a === 'copy-link')  { copyAsText(); return; }
+      if (a === 'open-course') {
+        toast('Course link would open here');
+        return;
+      }
+      if (a === 'start-course') {
+        toast('Starting DM-101');
+        return;
+      }
+    }
+  });
+
+  // input handlers
+  const nameInput = $('#dpb-name');
+  if (nameInput) {
+    // Live-typing greeting update (settled-typing): after the user pauses
+    // for ~700ms, or commits via Enter/Tab, swap "there" for their name.
+    const greetingName = $('#dpb-greeting-name-1');
+    let namePending = null;
+    let lastGreetingShown = 'there';
+    const SETTLE_MS = 700;
+    const MIN_LENGTH = 2;
+
+    function applyNameUpdate() {
+      const typed = (state.name || '').trim();
+      const target = (typed.length >= MIN_LENGTH) ? typed : 'there';
+      if (target === lastGreetingShown) return;
+      if (!greetingName) return;
+      greetingName.classList.add('dpb-is-fading');
+      setTimeout(() => {
+        greetingName.textContent = target;
+        greetingName.classList.remove('dpb-is-fading');
+        lastGreetingShown = target;
+      }, 240);
+    }
+    function scheduleNameUpdate() {
+      if (namePending) clearTimeout(namePending);
+      namePending = setTimeout(applyNameUpdate, SETTLE_MS);
+    }
+    function commitNameNow() {
+      if (namePending) { clearTimeout(namePending); namePending = null; }
+      applyNameUpdate();
+    }
+
+    nameInput.addEventListener('input', (e) => {
+      state.name = e.target.value;
+      updateContinueButtons();
+      scheduleNameUpdate();
+    });
+    nameInput.addEventListener('focus', () => {
+      if (greetingName) greetingName.classList.add('dpb-is-active');
+    });
+    nameInput.addEventListener('blur', () => {
+      if (greetingName) greetingName.classList.remove('dpb-is-active');
+      commitNameNow();
+    });
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        commitNameNow();
+        const next1 = $('[data-action="next-1"]');
+        if (next1 && !next1.disabled) next1.click();
+      }
+      if (e.key === ' ') commitNameNow();
+    });
+  }
+
+  const goalTextarea = $('#dpb-goal');
+  if (goalTextarea) {
+    goalTextarea.addEventListener('input', (e) => {
+      state.goalText = e.target.value;
+      const cnt = $('#dpb-goal-count');
+      if (cnt) cnt.textContent = e.target.value.length;
+      // changing the goal text invalidates any synopsis we'd previously built
+      state.synopsisEdited = false;
+      state.synopsis = '';
+      // also clear the effective prompt so the review step re-infers it
+      // (we don't clear selectedPrompt here so the chip stays visually selected)
+      state.effectivePrompt = null;
+      updateContinueButtons();
+    });
+  }
+
+  // ───────────────────────────────────────────────────────────────────
+  // SYNOPSIS-CARD INTERACTIONS (delegated, since the card is dynamic)
+  // ───────────────────────────────────────────────────────────────────
+  app.addEventListener('input', (e) => {
+    if (e.target && e.target.id === 'dpb-synopsis-text') {
+      state.synopsis = e.target.innerText.trim();
+      state.synopsisEdited = true;
+    }
+  });
+
+  app.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'dpb-reclass-select') {
+      state.effectivePrompt = e.target.value;
+      // re-render only the synopsis text portion: preserve the user's inline edit if they made one,
+      // otherwise regenerate from the new prompt
+      const textEl = $('#dpb-synopsis-text');
+      if (textEl && !state.synopsisEdited) {
+        textEl.innerHTML = generateSynopsis(state.effectivePrompt, state.goalText);
+      }
+    }
+  });
+
+  // Prevent Enter in the contenteditable from inserting a newline; just commit and blur instead.
+  app.addEventListener('keydown', (e) => {
+    if (e.target && e.target.id === 'dpb-synopsis-text' && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────
+  // INIT
+  // ───────────────────────────────────────────────────────────────────
+  renderRail();
+  updateContinueButtons();
+
+})();
+</script>
+</body>
+</html>
