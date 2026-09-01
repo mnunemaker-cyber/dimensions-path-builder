@@ -303,6 +303,21 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
   color: var(--dpb-ink) !important;
   font-weight: 500 !important;
 }
+.dpb-primary-open {
+  margin-top: 16px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+}
+.dpb-standalone-link {
+  color: var(--dpb-brand) !important;
+  text-decoration: none;
+  font-weight: 500 !important;
+}
+.dpb-standalone-link:hover {
+  text-decoration: underline;
+}
 
 /* Standalone topic callouts (from below-level courses that were dropped) */
 .dpb-standalone-wrap {
@@ -755,6 +770,13 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
 .dpb-pd-course-meta {
   font-size: 9pt;
   opacity: 0.85;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.dpb-pd-course-url {
+  font-size: 8pt;
+  opacity: 0.7;
+  margin-top: 2pt;
+  word-break: break-all;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -1377,6 +1399,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     'DM-101': {
       id: 'DM-101',
       shortName: 'Dimensions 101',
+      url: 'https://learn.dimensions.ai/101-getting-started-with-dimensions',
       seriesTag: 'Getting Started',
       title: 'Getting Started with Dimensions',
       time: 40,
@@ -1507,6 +1530,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     'DM-102': {
       id: 'DM-102',
       shortName: 'Dimensions 102',
+      url: 'https://learn.dimensions.ai/dimensions-102',
       seriesTag: 'Search & Discovery',
       title: 'Refine Your Search and AI Discovery',
       time: 20,
@@ -1553,8 +1577,9 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
           label: 'Similar Documents Search (paste text; top 500 / 1000 / 2000 results)',
           keywords: ['similar documents', 'similar publications', 'similar papers', 'paste text', 'paste abstract', 'more like this', 'similar to this', 'related paper', 'related work'],
           goals: {
+            'find-papers':  { pri: 2, why: 'For niche or specific searches: paste a paragraph of text and Dimensions extracts the concepts, returning conceptually similar work — a keyword-free way to find related papers.' },
             'reading-list': { pri: 1, why: 'The mechanics behind "more like this" and what the similarity is actually based on.' },
-            'exploring': { pri: 3, why: 'The "show me more like this" feature most people don\'t know exists.' }
+            'exploring':    { pri: 3, why: 'The "show me more like this" feature most people don\'t know exists.' }
           }
         },
         {
@@ -1615,6 +1640,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     'DM-103': {
       id: 'DM-103',
       shortName: 'Dimensions 103',
+      url: 'https://learn.dimensions.ai/103-advanced-search',
       seriesTag: 'Advanced Search',
       title: 'Advanced Search',
       time: 50,
@@ -1735,6 +1761,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     },
     'DM-104': {
       id: 'DM-104',
+      url: 'https://learn.dimensions.ai/proximity-search-in-dimensions',
       seriesTag: 'Precision Technique',
       title: 'Proximity Search in Dimensions',
       time: 15,
@@ -1746,8 +1773,8 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
           label: 'What is Proximity Search? (why exact phrases are sometimes too strict)',
           keywords: ['near each other', 'appear near', 'appear close', 'close together', 'proximity search', 'proximity', 'terms near each other', 'words near each other', 'words nearby', 'terms nearby', 'not exact phrase', 'flexible phrase', 'phrase with variation', 'author phrasing differs', 'terms in different order', 'terms rearranged', 'phrases vary'],
           goals: {
-            'find-papers': { pri: 3, why: 'When authors phrase the same idea in different orders or with words between them, exact phrase misses hits — proximity finds them anyway.' },
-            'reading-list': { pri: 3, why: 'For building comprehensive reading lists on a topic where terminology varies across authors.' }
+            'find-papers': { pri: 2, why: 'A precision technique for niche or specific searches — when the exact phrase misses hits because authors phrase the idea differently, proximity search catches them.' },
+            'reading-list': { pri: 2, why: 'For building comprehensive reading lists on a topic where terminology varies across authors.' }
           }
         },
         {
@@ -1755,7 +1782,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
           label: 'The syntax: quoted phrase + tilde + distance number ("machine learning health outcomes"~3)',
           keywords: ['proximity syntax', 'tilde', 'tilde operator', 'tilde syntax', 'distance number', 'phrase tilde', 'quoted phrase tilde', 'proximity distance', 'phrase~3', 'phrase~5', 'how to write proximity', 'proximity syntax dimensions'],
           goals: {
-            'find-papers': { pri: 3, why: 'The actual syntax — the number after the tilde controls how much flexibility you allow between terms.' }
+            'find-papers': { pri: 2, why: 'The actual syntax — the number after the tilde controls how much flexibility you allow between terms. A precision tool for niche searches.' }
           }
         },
         {
@@ -1774,6 +1801,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     },
     'DM-105': {
       id: 'DM-105',
+      url: 'https://learn.dimensions.ai/find-a-reviewer-in-dimensions',
       seriesTag: 'Workflow — Reviewer & Expert Sourcing',
       title: 'Find a Reviewer in Dimensions',
       time: 45,
@@ -1881,6 +1909,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     },
     'DM-106': {
       id: 'DM-106',
+      url: 'https://learn.dimensions.ai/accelerating-analytics-your-guide-to-the-dimensions-api',
       seriesTag: 'Developer / Analytics',
       title: 'Accelerating Analytics: Your Guide to the Dimensions API',
       time: 60,
@@ -1981,6 +2010,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
     },
     'DM-107': {
       id: 'DM-107',
+      url: 'https://learn.dimensions.ai/from-funding-to-policy-reading-a-fully-linked-dimensions-record',
       seriesTag: 'Research Lifecycle',
       title: 'From Funding to Policy: Reading a Fully Linked Dimensions Record',
       time: 15,
@@ -2455,7 +2485,9 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
   // match — either 2+ matches, or 1 match that clearly outranks #2.
   function buildRecommendation(state) {
     const ranked = rankTopics(state);
-    const TOP_N = 8;
+    const TOP_N = 10; // Was 8. Bumped to accommodate 7+ courses and let
+                       // niche/precision topics from newer courses (DM-104,
+                       // DM-107) surface without pushing out foundations.
 
     // Discerning-when-specific: if ANY topic across the FULL ranked list
     // matched a keyword, the user typed something specific — respect it.
@@ -2592,7 +2624,10 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
         '<div class="dpb-primary-badge">◉ This is the topic that answers your goal most directly</div>' +
         '<div class="dpb-primary-label">' + escapeHtml(p.topic.label) + '</div>' +
         '<div class="dpb-primary-why">' + p.why + '</div>' +
-        '<div class="dpb-primary-loc">Lives in <strong>' + escapeHtml(p.course.shortName || p.course.title) + '</strong> · ' + p.course.time + ' min · ' + p.course.level + '</div>';
+        '<div class="dpb-primary-loc">Lives in <strong>' + escapeHtml(p.course.shortName || p.course.title) + '</strong> · ' + p.course.time + ' min · ' + p.course.level + '</div>' +
+        (p.course.url
+          ? '<a class="dpb-btn dpb-btn-outline dpb-primary-open" href="' + p.course.url + '" target="_blank" rel="noopener noreferrer">Open ' + escapeHtml(p.course.shortName || p.course.title) + ' <span class="dpb-ico">↗</span></a>'
+          : '');
       coursesEl.appendChild(primaryCard);
     }
 
@@ -2631,7 +2666,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
         '</div>' +
         '<div class="dpb-course-footer">' +
           '<span class="dpb-course-count">' + c.topics.length + ' topics in this course</span>' +
-          '<button type="button" class="dpb-btn dpb-btn-white" data-action="open-course" data-course-id="' + c.id + '">Open course <span class="dpb-ico">↗</span></button>' +
+          '<a class="dpb-btn dpb-btn-white" href="' + (c.url || '#') + '" target="_blank" rel="noopener noreferrer" data-course-id="' + c.id + '">Open course <span class="dpb-ico">↗</span></a>' +
         '</div>';
       coursesEl.appendChild(card);
     });
@@ -2648,7 +2683,11 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
             '<div class="dpb-standalone-body">' +
               '<div class="dpb-standalone-label">' + escapeHtml(m.topic.label) + '</div>' +
               '<div class="dpb-standalone-why">' + m.why + '</div>' +
-              '<div class="dpb-standalone-loc">In <strong>' + escapeHtml(m.course.shortName || m.course.title) + '</strong></div>' +
+              '<div class="dpb-standalone-loc">In <strong>' + escapeHtml(m.course.shortName || m.course.title) + '</strong>' +
+                (m.course.url
+                  ? ' · <a class="dpb-standalone-link" href="' + m.course.url + '" target="_blank" rel="noopener noreferrer">Open <span class="dpb-ico">↗</span></a>'
+                  : '') +
+              '</div>' +
             '</div>' +
           '</div>'
         )).join('');
@@ -2851,6 +2890,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
           '<div class="dpb-pd-course-tag"><span class="dpb-pd-course-num">' + (idx + 1) + '</span>' + escapeHtml(c.shortName || c.seriesTag) + '</div>' +
           '<h2 class="dpb-pd-course-title">' + escapeHtml(c.title) + '</h2>' +
           '<div class="dpb-pd-course-meta">' + c.time + ' min · ' + c.level + ' level</div>' +
+          (c.url ? '<div class="dpb-pd-course-url">' + escapeHtml(c.url) + '</div>' : '') +
         '</div>' +
         '<div class="dpb-pd-track">' +
           '<div class="dpb-pd-track-cell"><strong>Started</strong><span class="dpb-pd-track-line"></span></div>' +
@@ -2938,6 +2978,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
       lines.push('◉ ' + rec.primary.topic.label);
       lines.push('  ' + rec.primary.why);
       lines.push('  Lives in ' + (rec.primary.course.shortName || rec.primary.course.title));
+      if (rec.primary.course.url) lines.push('  Open: ' + rec.primary.course.url);
       lines.push('');
     }
 
@@ -2950,6 +2991,7 @@ body { margin: 0; background: #2a245c; min-height: 100vh; }
       lines.push('');
       lines.push((idx + 1) + '. ' + c.title + ' (' + c.time + ' min · ' + c.level + ')');
       lines.push('   ' + c.desc);
+      if (c.url) lines.push('   Open: ' + c.url);
       lines.push('');
       lines.push('   ' + entry.matchedTopics.length + ' TOPIC' + (entry.matchedTopics.length === 1 ? '' : 'S') + ' MATCHED:');
       entry.matchedTopics.forEach(m => {
